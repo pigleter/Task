@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" type="text/css" href="/css/easyui.css">
+<link rel="stylesheet" type="text/css" href="/css/panel.css">
+<link rel="stylesheet" type="text/css" href="/css/icon.css">
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/js/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="/js/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="/js/custom/global.js"></script>
+<script type="text/javascript" src="/js/custom/interface.js"></script>
+<script type="text/javascript" src="/js/custom/schedule.js"></script>
+<script type="text/javascript">
+	function get_content(content){
+		switch(content)
+		{
+		case 'interface':
+			$('#pl').panel({
+			    href:'/content/interface.html',
+			    onLoad:function(){
+			    	showInterfacePage();
+			    }
+			});			
+			break;
+		case 'schedule':
+			$('#pl').panel({
+			    href:'/content/schedule.html',
+			    onLoad:function(){
+			    	showSchedulePage();
+			    }
+			});		
+			break;
+		};
+	}
+</script>
+</head>
+<body class="easyui-layout">
+	<div data-options="region:'north',collapsible:'false',noheader:'true'" style="height:60px;"></div>
+	<div data-options="region:'west',title:'功能菜单'" style="width:200px;">
+		<div class="easyui-accordion" data-options="selected:-1,multiple:true,border:false">
+	    <div title="接口配置">
+	    	<a class="easyui-linkbutton" data-options="fit:'true',plain:'true'" style="text-align:left" onclick="get_content('interface');">接口配置</a>
+	    </div>
+	    <div title="作业调度">
+	    	<div>
+	    		<a class="easyui-linkbutton" data-options="fit:'true',plain:'true'" style="text-align:left" onclick="get_content('schedule');">作业调度</a>
+	    	</div>
+	    	<div>	    	
+	    		<a class="easyui-linkbutton" data-options="fit:'true',plain:'true'" style="text-align:left">调度计划</a>
+	    	</div>
+	    </div>
+	    <div title="日志查看">
+	    	<a class="easyui-linkbutton" data-options="fit:'true',plain:'true'" style="text-align:left">日志查看</a>
+	    </div>
+	    <div title="系统配置">
+	    	<a class="easyui-linkbutton" data-options="fit:'true',plain:'true'" style="text-align:left">系统配置</a>
+	    </div>
+	    <div title="用户管理">
+	    	<a class="easyui-linkbutton" data-options="fit:'true',plain:'true'" style="text-align:left">用户管理</a>
+	    </div>
+	</div>
+	</div>
+	<div data-options="region:'center',noheader:'true'" style="padding:5px;background:#eee;">
+		<div id="pl" class="easyui-panel" data-options="fit:true,border:false" style="background:transparent">
+			<p>
+			</p>			
+		</div>
+	</div>
+	<div id="dd"></div>
+</body>
+</html>
