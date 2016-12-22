@@ -286,35 +286,100 @@ function switchSchedule(obj, checked){
     });
 }
 
-function setValueM(obj){
-	var cbs = $(obj).combobox('panel').find("[name='c_M']");
-	var dls = $(obj).combobox('panel').find("[name='dl_M']")[0];
-	var v = "";
-	var t = "";
-	for(var i=0; i<cbs.length; i++){
-		if(cbs[i].checked){
-			if(cbs[i].value == "*"){
-				v = $(cbs[i]).val() + ",";
-				t = $(cbs[i]).next().text() + "，";
-				break;
+function checkAction(obj, objType){
+	var cb_check = $(obj)[0];
+	var cbs_M = $('#pl_M').find("[name='cb_M']");
+	var cb_M_All = $('#pl_M').find("[name='cb_M_All']")[0];
+	var cbs_W = $('#pl_W').find("[name='cb_W']");
+	var cb_W_All = $('#pl_W').find("[name='cb_W_All']")[0];
+	var cbs_D = $('#pl_D').find("[name='cb_D']");
+	var cb_D_All = $('#pl_D').find("[name='cb_D_All']")[0];
+	var cb_D_Last = $('#pl_D').find("[name='cb_D_Last']")[0];
+	switch(objType)
+	{
+	case 'M':
+		if(cb_check.value == "*"){
+			for(var i=0; i<cbs_M.length; i++){
+				cbs_M[i].checked = cb_M_All.checked;
+			}
+		}
+		else{
+			if(cb_check.checked){
+				for(var i=0; i<cbs_M.length; i++){
+					if(!cbs_M[i].checked){
+						break;
+					}
+					if(i == 11){
+						cb_M_All.checked = true;
+					}
+				}
 			}
 			else{
-				v = v + $(cbs[i]).val() + ",";
-				t = t + $(cbs[i]).next().text() + "，";
+				cb_M_All.checked = false;
 			}
 		}
-	}
-	v = v.substr(0, v.length - 1);
-	t = t.substr(0, t.length - 1);
-	for(var i=0; i<dls.length; i++){
-		if(dls[i].selected){
-			v = v + "/" + $(dls[i]).val();
-			t = t + "中，每" + $(dls[i]).text() + "个月执行";
-			break;
+		break;
+	case 'W':
+		if(cb_check.value == "*"){
+			for(var i=0; i<cbs_W.length; i++){
+				cbs_W[i].checked = cb_W_All.checked;
+			}
 		}
+		else{
+			if(cb_check.checked){
+				for(var i=0; i<cbs_W.length; i++){
+					if(!cbs_W[i].checked){
+						break;
+					}
+					if(i == 6){
+						cb_W_All.checked = true;
+					}
+				}
+			}
+			else{
+				cb_W_All.checked = false;
+			}
+		}
+		break;
+	case 'D':
+		if(cb_check.value == "*"){
+			for(var i=0; i<cbs_D.length; i++){
+				cbs_D[i].checked = cb_D_All.checked;
+			}
+			cb_D_Last.checked = false;
+		}
+		else if(cb_check.value == "l"){
+			if(cb_check.checked){
+				for(var i=0; i<cbs_D.length; i++){
+					cbs_D[i].checked = false;
+				}
+				cb_D_All.checked = false;
+			}
+		}
+		else{
+			if(cb_check.checked){
+				for(var i=0; i<cbs_D.length; i++){
+					if(!cbs_D[i].checked){
+						break;
+					}
+					if(i == 30){
+						cb_D_All.checked = true;
+					}
+				}
+				cb_D_Last.checked = false;
+			}
+			else{
+				cb_D_All.checked = false;
+			}
+		}
+		break;
+	case 'HH':
+		break;
+	case 'MM':
+		break;
+	case 'SS':
+		break;
 	}
-	$(obj).combobox('setValue', v);
-	$(obj).combobox('setText', getText(v, "M"));
 }
 
 function getText(value, valType){

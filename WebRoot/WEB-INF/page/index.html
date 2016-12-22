@@ -69,5 +69,710 @@
 		</div>
 	</div>
 	<div id="dd"></div>
+	<div id="win_plan" class="easyui-window" title="调度设置" style="width:700px;height:630px"
+        data-options="modal:true,closable:false,maximizable:false,minimizable:false,collapsible:false,resizable:false,closed:true">
+		<div class="easyui-layout" data-options="fit:true">
+			<div id="scheduleID" style="visibility:hidden;"></div>
+			<div data-options="region:'south',noheader:'true',border:false" style="height:35px;text-align:right">
+				<a id="btn_save_plan" href="#" class="easyui-linkbutton" data-options="text:'保存',iconCls:'icon-save'"></a>&nbsp;
+				<a id="btn_cancel_plan" class="easyui-linkbutton" data-options="text:'取消',iconCls:'icon-cancel'" onclick="closeWinPlan();"></a>&nbsp;
+			</div>
+			<div data-options="region:'center',noheader:'true',border:false">
+				<div id="pl_M" class="easyui-panel" data-options="title:'月份',border:false">
+					<br>&nbsp;
+					<input type="checkbox" name="cb_M" value="1" onclick="checkAction(this, 'M')"><span>一月</span>&nbsp;
+					<input type="checkbox" name="cb_M" value="2" onclick="checkAction(this, 'M')"><span>二月</span>&nbsp;
+					<input type="checkbox" name="cb_M" value="3" onclick="checkAction(this, 'M')"><span>三月</span>&nbsp;
+					<input type="checkbox" name="cb_M" value="4" onclick="checkAction(this, 'M')"><span>四月</span>&nbsp;
+					<input type="checkbox" name="cb_M" value="5" onclick="checkAction(this, 'M')"><span>五月</span>&nbsp;&nbsp;
+					<input type="checkbox" name="cb_M" value="6" onclick="checkAction(this, 'M')"><span>六月</span><br>&nbsp;
+					<input type="checkbox" name="cb_M" value="7" onclick="checkAction(this, 'M')"><span>七月</span>&nbsp;
+					<input type="checkbox" name="cb_M" value="8" onclick="checkAction(this, 'M')"><span>八月</span>&nbsp;
+					<input type="checkbox" name="cb_M" value="9" onclick="checkAction(this, 'M')"><span>九月</span>&nbsp;
+					<input type="checkbox" name="cb_M" value="10" onclick="checkAction(this, 'M')"><span>十月</span>&nbsp;
+					<input type="checkbox" name="cb_M" value="11" onclick="checkAction(this, 'M')"><span>十一月</span>&nbsp;
+					<input type="checkbox" name="cb_M" value="12" onclick="checkAction(this, 'M')"><span>十二月</span>&nbsp;
+					<input type="checkbox" name="cb_M_All" value="*" onclick="checkAction(this, 'M')"><span>全部</span>&nbsp;
+				</div><br>
+				<div id="pl_W" class="easyui-panel" data-options="title:'周天',border:false">
+					<br>&nbsp;
+					<input type="checkbox" name="cb_W" value="1" onclick="checkAction(this, 'W');"><span>星期一</span>&nbsp;
+					<input type="checkbox" name="cb_W" value="2" onclick="checkAction(this, 'W');"><span>星期二</span>&nbsp;
+					<input type="checkbox" name="cb_W" value="3" onclick="checkAction(this, 'W');"><span>星期三</span>&nbsp;
+					<input type="checkbox" name="cb_W" value="4" onclick="checkAction(this, 'W');"><span>星期四</span>&nbsp;
+					<input type="checkbox" name="cb_W" value="5" onclick="checkAction(this, 'W');"><span>星期五</span>&nbsp;
+					<input type="checkbox" name="cb_W" value="6" onclick="checkAction(this, 'W');"><span>星期六</span>&nbsp;
+					<input type="checkbox" name="cb_W" value="0" onclick="checkAction(this, 'W');"><span>星期日</span>&nbsp;
+					<input type="checkbox" name="cb_W_All" value="*" onclick="checkAction(this, 'W');"><span>全部</span>&nbsp;
+				</div><br>
+				<div id="pl_D" class="easyui-panel" data-options="title:'月天',border:false">
+					<br>&nbsp;
+					<input type="checkbox" name="cb_D" value="1" onclick="checkAction(this, 'D');"><span>1 </span>&nbsp;
+					<input type="checkbox" name="cb_D" value="2" onclick="checkAction(this, 'D');"><span>2 </span>&nbsp;
+					<input type="checkbox" name="cb_D" value="3" onclick="checkAction(this, 'D');"><span>3 </span>&nbsp;
+					<input type="checkbox" name="cb_D" value="4" onclick="checkAction(this, 'D');"><span>4 </span>&nbsp;
+					<input type="checkbox" name="cb_D" value="5" onclick="checkAction(this, 'D');"><span>5 </span>&nbsp;
+					<input type="checkbox" name="cb_D" value="6" onclick="checkAction(this, 'D');"><span>6 </span>&nbsp;
+					<input type="checkbox" name="cb_D" value="7" onclick="checkAction(this, 'D');"><span>7 </span>&nbsp;
+					<input type="checkbox" name="cb_D" value="8" onclick="checkAction(this, 'D');"><span>8 </span>&nbsp;
+					<input type="checkbox" name="cb_D" value="9" onclick="checkAction(this, 'D');"><span>9 </span>&nbsp;
+					<input type="checkbox" name="cb_D" value="10" onclick="checkAction(this, 'D');"><span>10</span>&nbsp;
+					<input type="checkbox" name="cb_D" value="11" onclick="checkAction(this, 'D');"><span>11</span><br>&nbsp;
+					<input type="checkbox" name="cb_D" value="12" onclick="checkAction(this, 'D');"><span>12</span>&nbsp;
+					<input type="checkbox" name="cb_D" value="13" onclick="checkAction(this, 'D');"><span>13</span>&nbsp;
+					<input type="checkbox" name="cb_D" value="14" onclick="checkAction(this, 'D');"><span>14</span>&nbsp;
+					<input type="checkbox" name="cb_D" value="15" onclick="checkAction(this, 'D');"><span>15</span>&nbsp;
+					<input type="checkbox" name="cb_D" value="16" onclick="checkAction(this, 'D');"><span>16</span>&nbsp;
+					<input type="checkbox" name="cb_D" value="17" onclick="checkAction(this, 'D');"><span>17</span>&nbsp;
+					<input type="checkbox" name="cb_D" value="18" onclick="checkAction(this, 'D');"><span>18</span>&nbsp;
+					<input type="checkbox" name="cb_D" value="19" onclick="checkAction(this, 'D');"><span>19</span>&nbsp;
+					<input type="checkbox" name="cb_D" value="20" onclick="checkAction(this, 'D');"><span>20</span>&nbsp;
+					<input type="checkbox" name="cb_D" value="21" onclick="checkAction(this, 'D');"><span>21</span>&nbsp;
+					<input type="checkbox" name="cb_D" value="22" onclick="checkAction(this, 'D');"><span>22</span><br>&nbsp;
+					<input type="checkbox" name="cb_D" value="23" onclick="checkAction(this, 'D');"><span>23</span>&nbsp;
+					<input type="checkbox" name="cb_D" value="24" onclick="checkAction(this, 'D');"><span>24</span>&nbsp;
+					<input type="checkbox" name="cb_D" value="25" onclick="checkAction(this, 'D');"><span>25</span>&nbsp;
+					<input type="checkbox" name="cb_D" value="26" onclick="checkAction(this, 'D');"><span>26</span>&nbsp;
+					<input type="checkbox" name="cb_D" value="27" onclick="checkAction(this, 'D');"><span>27</span>&nbsp;
+					<input type="checkbox" name="cb_D" value="28" onclick="checkAction(this, 'D');"><span>28</span>&nbsp;
+					<input type="checkbox" name="cb_D" value="29" onclick="checkAction(this, 'D');"><span>29</span>&nbsp;
+					<input type="checkbox" name="cb_D" value="30" onclick="checkAction(this, 'D');"><span>30</span>&nbsp;
+					<input type="checkbox" name="cb_D" value="31" onclick="checkAction(this, 'D');"><span>31</span>&nbsp;
+					<input type="checkbox" name="cb_D_Last" value="l" onclick="checkAction(this, 'D');"><span>月末</span>
+					<input type="checkbox" name="cb_D_All" value="*" onclick="checkAction(this, 'D');"><span>全部</span>
+				</div><br>
+				<div id="pl_HH" class="easyui-panel" data-options="title:'小时',border:false">
+					<br>&nbsp;
+					<input type="radio" name="rb_HH" value="spec" onclick="checkAction(this, 'HH');"><span>指定</span>
+						<select name="cbx_HH_spec" class="easyui-combobox" style="width:50px" data-options="editable:false,disabled:true,multiple:true">
+							<option value ="0" selected="selected">0</option>
+							<option value ="1">1</option>
+							<option value ="2">2</option>
+							<option value ="3">3</option>
+							<option value ="4">4</option>
+							<option value ="5">5</option>
+							<option value ="6">6</option>
+							<option value ="7">7</option>
+							<option value ="8">8</option>
+							<option value ="9">9</option>
+							<option value ="10">10</option>
+							<option value ="11">11</option>
+							<option value ="12">12</option>
+							<option value ="13">13</option>
+							<option value ="14">14</option>
+							<option value ="15">15</option>
+							<option value ="16">16</option>
+							<option value ="17">17</option>
+							<option value ="18">18</option>
+							<option value ="19">19</option>
+							<option value ="20">20</option>
+							<option value ="21">21</option>
+							<option value ="22">22</option>
+							<option value ="23">23</option>
+						</select>
+						&nbsp;&nbsp;
+					<input type="radio" name="rb_HH" value="range" onclick="checkAction(this, 'HH');"><span>范围</span>
+						<select name="cbx_HH_range_from" class="easyui-combobox" style="width:50px" data-options="editable:false,disabled:true">
+							<option value ="0" selected="selected">0</option>
+							<option value ="1">1</option>
+							<option value ="2">2</option>
+							<option value ="3">3</option>
+							<option value ="4">4</option>
+							<option value ="5">5</option>
+							<option value ="6">6</option>
+							<option value ="7">7</option>
+							<option value ="8">8</option>
+							<option value ="9">9</option>
+							<option value ="10">10</option>
+							<option value ="11">11</option>
+							<option value ="12">12</option>
+							<option value ="13">13</option>
+							<option value ="14">14</option>
+							<option value ="15">15</option>
+							<option value ="16">16</option>
+							<option value ="17">17</option>
+							<option value ="18">18</option>
+							<option value ="19">19</option>
+							<option value ="20">20</option>
+							<option value ="21">21</option>
+							<option value ="22">22</option>
+							<option value ="23">23</option>
+						</select>
+						&nbsp;到
+						<select name="cbx_HH_range_to" class="easyui-combobox" style="width:50px" data-options="editable:false,disabled:true">
+							<option value ="0">0</option>
+							<option value ="1">1</option>
+							<option value ="2">2</option>
+							<option value ="3">3</option>
+							<option value ="4">4</option>
+							<option value ="5">5</option>
+							<option value ="6">6</option>
+							<option value ="7">7</option>
+							<option value ="8">8</option>
+							<option value ="9">9</option>
+							<option value ="10">10</option>
+							<option value ="11">11</option>
+							<option value ="12">12</option>
+							<option value ="13">13</option>
+							<option value ="14">14</option>
+							<option value ="15">15</option>
+							<option value ="16">16</option>
+							<option value ="17">17</option>
+							<option value ="18">18</option>
+							<option value ="19">19</option>
+							<option value ="20">20</option>
+							<option value ="21">21</option>
+							<option value ="22">22</option>
+							<option value ="23" selected="selected">23</option>
+						</select>
+						&nbsp;&nbsp;
+					<input type="radio" name="rb_HH" value="all" onclick="checkAction(this, 'HH');" checked="checked" ><span>全部</span>&nbsp;&nbsp;
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<input type="checkbox" name="cb_HH_freq" disabled="disabled"><span>执行间隔</span>
+						<select name="cbx_HH_freq" class="easyui-combobox" style="width:50px" data-options="editable:false,disabled:true">
+							<option value ="1" selected="selected">1</option>
+							<option value ="2">2</option>
+							<option value ="3">3</option>
+							<option value ="4">4</option>
+							<option value ="5">5</option>
+							<option value ="6">6</option>
+							<option value ="7">7</option>
+							<option value ="8">8</option>
+							<option value ="9">9</option>
+							<option value ="10">10</option>
+							<option value ="11">11</option>
+							<option value ="12">12</option>
+							<option value ="13">13</option>
+							<option value ="14">14</option>
+							<option value ="15">15</option>
+							<option value ="16">16</option>
+							<option value ="17">17</option>
+							<option value ="18">18</option>
+							<option value ="19">19</option>
+							<option value ="20">20</option>
+							<option value ="21">21</option>
+							<option value ="22">22</option>
+							<option value ="23">23</option>
+						</select>
+				</div><br>
+				<div id="pl_MM" class="easyui-panel" data-options="title:'分钟',border:false">
+					<br>&nbsp;
+					<input type="radio" name="rb_MM" value="spec" onclick="checkAction(this, 'MM');"><span>指定</span>
+						<select name="cbx_MM_spec" class="easyui-combobox" style="width:50px" data-options="editable:false,disabled:true,multiple:true">
+							<option value ="0" selected="selected">0</option>
+							<option value ="1">1</option>
+							<option value ="2">2</option>
+							<option value ="3">3</option>
+							<option value ="4">4</option>
+							<option value ="5">5</option>
+							<option value ="6">6</option>
+							<option value ="7">7</option>
+							<option value ="8">8</option>
+							<option value ="9">9</option>
+							<option value ="10">10</option>
+							<option value ="11">11</option>
+							<option value ="12">12</option>
+							<option value ="13">13</option>
+							<option value ="14">14</option>
+							<option value ="15">15</option>
+							<option value ="16">16</option>
+							<option value ="17">17</option>
+							<option value ="18">18</option>
+							<option value ="19">19</option>
+							<option value ="20">20</option>
+							<option value ="21">21</option>
+							<option value ="22">22</option>
+							<option value ="23">23</option>
+							<option value ="24">24</option>
+							<option value ="25">25</option>
+							<option value ="26">26</option>
+							<option value ="27">27</option>
+							<option value ="28">28</option>
+							<option value ="29">29</option>
+							<option value ="30">30</option>
+							<option value ="31">31</option>
+							<option value ="32">32</option>
+							<option value ="33">33</option>
+							<option value ="34">34</option>
+							<option value ="35">35</option>
+							<option value ="36">36</option>
+							<option value ="37">37</option>
+							<option value ="38">38</option>
+							<option value ="39">39</option>
+							<option value ="40">40</option>
+							<option value ="41">41</option>
+							<option value ="42">42</option>
+							<option value ="43">43</option>
+							<option value ="44">44</option>
+							<option value ="45">45</option>
+							<option value ="46">46</option>
+							<option value ="47">47</option>
+							<option value ="48">48</option>
+							<option value ="49">49</option>
+							<option value ="50">50</option>
+							<option value ="51">51</option>
+							<option value ="52">52</option>
+							<option value ="53">53</option>
+							<option value ="54">54</option>
+							<option value ="55">55</option>
+							<option value ="56">56</option>
+							<option value ="57">57</option>
+							<option value ="58">58</option>
+							<option value ="59">59</option>
+						</select>
+						&nbsp;&nbsp;
+					<input type="radio" name="rb_MM" value="range" onclick="checkAction(this, 'MM');"><span>范围</span>
+						<select name="cbx_MM_range_from" class="easyui-combobox" style="width:50px" data-options="editable:false,disabled:true">
+							<option value ="0" selected="selected">0</option>
+							<option value ="1">1</option>
+							<option value ="2">2</option>
+							<option value ="3">3</option>
+							<option value ="4">4</option>
+							<option value ="5">5</option>
+							<option value ="6">6</option>
+							<option value ="7">7</option>
+							<option value ="8">8</option>
+							<option value ="9">9</option>
+							<option value ="10">10</option>
+							<option value ="11">11</option>
+							<option value ="12">12</option>
+							<option value ="13">13</option>
+							<option value ="14">14</option>
+							<option value ="15">15</option>
+							<option value ="16">16</option>
+							<option value ="17">17</option>
+							<option value ="18">18</option>
+							<option value ="19">19</option>
+							<option value ="20">20</option>
+							<option value ="21">21</option>
+							<option value ="22">22</option>
+							<option value ="23">23</option>
+							<option value ="24">24</option>
+							<option value ="25">25</option>
+							<option value ="26">26</option>
+							<option value ="27">27</option>
+							<option value ="28">28</option>
+							<option value ="29">29</option>
+							<option value ="30">30</option>
+							<option value ="31">31</option>
+							<option value ="32">32</option>
+							<option value ="33">33</option>
+							<option value ="34">34</option>
+							<option value ="35">35</option>
+							<option value ="36">36</option>
+							<option value ="37">37</option>
+							<option value ="38">38</option>
+							<option value ="39">39</option>
+							<option value ="40">40</option>
+							<option value ="41">41</option>
+							<option value ="42">42</option>
+							<option value ="43">43</option>
+							<option value ="44">44</option>
+							<option value ="45">45</option>
+							<option value ="46">46</option>
+							<option value ="47">47</option>
+							<option value ="48">48</option>
+							<option value ="49">49</option>
+							<option value ="50">50</option>
+							<option value ="51">51</option>
+							<option value ="52">52</option>
+							<option value ="53">53</option>
+							<option value ="54">54</option>
+							<option value ="55">55</option>
+							<option value ="56">56</option>
+							<option value ="57">57</option>
+							<option value ="58">58</option>
+							<option value ="59">59</option>
+						</select>
+						&nbsp;到
+						<select name="cbx_MM_range_to" class="easyui-combobox" style="width:50px" data-options="editable:false,disabled:true">
+							<option value ="0">0</option>
+							<option value ="1">1</option>
+							<option value ="2">2</option>
+							<option value ="3">3</option>
+							<option value ="4">4</option>
+							<option value ="5">5</option>
+							<option value ="6">6</option>
+							<option value ="7">7</option>
+							<option value ="8">8</option>
+							<option value ="9">9</option>
+							<option value ="10">10</option>
+							<option value ="11">11</option>
+							<option value ="12">12</option>
+							<option value ="13">13</option>
+							<option value ="14">14</option>
+							<option value ="15">15</option>
+							<option value ="16">16</option>
+							<option value ="17">17</option>
+							<option value ="18">18</option>
+							<option value ="19">19</option>
+							<option value ="20">20</option>
+							<option value ="21">21</option>
+							<option value ="22">22</option>
+							<option value ="23">23</option>
+							<option value ="24">24</option>
+							<option value ="25">25</option>
+							<option value ="26">26</option>
+							<option value ="27">27</option>
+							<option value ="28">28</option>
+							<option value ="29">29</option>
+							<option value ="30">30</option>
+							<option value ="31">31</option>
+							<option value ="32">32</option>
+							<option value ="33">33</option>
+							<option value ="34">34</option>
+							<option value ="35">35</option>
+							<option value ="36">36</option>
+							<option value ="37">37</option>
+							<option value ="38">38</option>
+							<option value ="39">39</option>
+							<option value ="40">40</option>
+							<option value ="41">41</option>
+							<option value ="42">42</option>
+							<option value ="43">43</option>
+							<option value ="44">44</option>
+							<option value ="45">45</option>
+							<option value ="46">46</option>
+							<option value ="47">47</option>
+							<option value ="48">48</option>
+							<option value ="49">49</option>
+							<option value ="50">50</option>
+							<option value ="51">51</option>
+							<option value ="52">52</option>
+							<option value ="53">53</option>
+							<option value ="54">54</option>
+							<option value ="55">55</option>
+							<option value ="56">56</option>
+							<option value ="57">57</option>
+							<option value ="58">58</option>
+							<option value ="59" selected="selected">59</option>
+						</select>
+						&nbsp;&nbsp;
+					<input type="radio" name="rb_MM" value="all" onclick="checkAction(this, 'MM');" checked="checked"><span>全部</span>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<input type="checkbox" name="cb_MM_freq" disabled="disabled"><span>执行间隔</span>
+						<select name="cbx_MM_freq" class="easyui-combobox" style="width:50px" data-options="editable:false,disabled:true">
+							<option value ="1" selected="selected">1</option>
+							<option value ="2">2</option>
+							<option value ="3">3</option>
+							<option value ="4">4</option>
+							<option value ="5">5</option>
+							<option value ="6">6</option>
+							<option value ="7">7</option>
+							<option value ="8">8</option>
+							<option value ="9">9</option>
+							<option value ="10">10</option>
+							<option value ="11">11</option>
+							<option value ="12">12</option>
+							<option value ="13">13</option>
+							<option value ="14">14</option>
+							<option value ="15">15</option>
+							<option value ="16">16</option>
+							<option value ="17">17</option>
+							<option value ="18">18</option>
+							<option value ="19">19</option>
+							<option value ="20">20</option>
+							<option value ="21">21</option>
+							<option value ="22">22</option>
+							<option value ="23">23</option>
+							<option value ="24">24</option>
+							<option value ="25">25</option>
+							<option value ="26">26</option>
+							<option value ="27">27</option>
+							<option value ="28">28</option>
+							<option value ="29">29</option>
+							<option value ="30">30</option>
+							<option value ="31">31</option>
+							<option value ="32">32</option>
+							<option value ="33">33</option>
+							<option value ="34">34</option>
+							<option value ="35">35</option>
+							<option value ="36">36</option>
+							<option value ="37">37</option>
+							<option value ="38">38</option>
+							<option value ="39">39</option>
+							<option value ="40">40</option>
+							<option value ="41">41</option>
+							<option value ="42">42</option>
+							<option value ="43">43</option>
+							<option value ="44">44</option>
+							<option value ="45">45</option>
+							<option value ="46">46</option>
+							<option value ="47">47</option>
+							<option value ="48">48</option>
+							<option value ="49">49</option>
+							<option value ="50">50</option>
+							<option value ="51">51</option>
+							<option value ="52">52</option>
+							<option value ="53">53</option>
+							<option value ="54">54</option>
+							<option value ="55">55</option>
+							<option value ="56">56</option>
+							<option value ="57">57</option>
+							<option value ="58">58</option>
+							<option value ="59">59</option>
+						</select>
+				</div><br>
+				<div id="pl_DD" class="easyui-panel" data-options="title:'秒钟',border:false">
+					<br>&nbsp;
+					<input type="radio" name="rb_SS" value="spec" onclick="checkAction(this, 'SS');"><span>指定</span>
+						<select name="cbx_SS_spec" class="easyui-combobox" style="width:50px" data-options="editable:false,disabled:true">
+							<option value ="0" selected="selected">0</option>
+							<option value ="1">1</option>
+							<option value ="2">2</option>
+							<option value ="3">3</option>
+							<option value ="4">4</option>
+							<option value ="5">5</option>
+							<option value ="6">6</option>
+							<option value ="7">7</option>
+							<option value ="8">8</option>
+							<option value ="9">9</option>
+							<option value ="10">10</option>
+							<option value ="11">11</option>
+							<option value ="12">12</option>
+							<option value ="13">13</option>
+							<option value ="14">14</option>
+							<option value ="15">15</option>
+							<option value ="16">16</option>
+							<option value ="17">17</option>
+							<option value ="18">18</option>
+							<option value ="19">19</option>
+							<option value ="20">20</option>
+							<option value ="21">21</option>
+							<option value ="22">22</option>
+							<option value ="23">23</option>
+							<option value ="24">24</option>
+							<option value ="25">25</option>
+							<option value ="26">26</option>
+							<option value ="27">27</option>
+							<option value ="28">28</option>
+							<option value ="29">29</option>
+							<option value ="30">30</option>
+							<option value ="31">31</option>
+							<option value ="32">32</option>
+							<option value ="33">33</option>
+							<option value ="34">34</option>
+							<option value ="35">35</option>
+							<option value ="36">36</option>
+							<option value ="37">37</option>
+							<option value ="38">38</option>
+							<option value ="39">39</option>
+							<option value ="40">40</option>
+							<option value ="41">41</option>
+							<option value ="42">42</option>
+							<option value ="43">43</option>
+							<option value ="44">44</option>
+							<option value ="45">45</option>
+							<option value ="46">46</option>
+							<option value ="47">47</option>
+							<option value ="48">48</option>
+							<option value ="49">49</option>
+							<option value ="50">50</option>
+							<option value ="51">51</option>
+							<option value ="52">52</option>
+							<option value ="53">53</option>
+							<option value ="54">54</option>
+							<option value ="55">55</option>
+							<option value ="56">56</option>
+							<option value ="57">57</option>
+							<option value ="58">58</option>
+							<option value ="59">59</option>
+						</select>
+						&nbsp;&nbsp;
+					<input type="radio" name="rb_SS" value="range" onclick="checkAction(this, 'SS');"><span>范围</span>
+						<select name="cbx_SS_range_from" class="easyui-combobox" style="width:50px" data-options="editable:false,disabled:true">
+							<option value ="0" selected="selected">0</option>
+							<option value ="1">1</option>
+							<option value ="2">2</option>
+							<option value ="3">3</option>
+							<option value ="4">4</option>
+							<option value ="5">5</option>
+							<option value ="6">6</option>
+							<option value ="7">7</option>
+							<option value ="8">8</option>
+							<option value ="9">9</option>
+							<option value ="10">10</option>
+							<option value ="11">11</option>
+							<option value ="12">12</option>
+							<option value ="13">13</option>
+							<option value ="14">14</option>
+							<option value ="15">15</option>
+							<option value ="16">16</option>
+							<option value ="17">17</option>
+							<option value ="18">18</option>
+							<option value ="19">19</option>
+							<option value ="20">20</option>
+							<option value ="21">21</option>
+							<option value ="22">22</option>
+							<option value ="23">23</option>
+							<option value ="24">24</option>
+							<option value ="25">25</option>
+							<option value ="26">26</option>
+							<option value ="27">27</option>
+							<option value ="28">28</option>
+							<option value ="29">29</option>
+							<option value ="30">30</option>
+							<option value ="31">31</option>
+							<option value ="32">32</option>
+							<option value ="33">33</option>
+							<option value ="34">34</option>
+							<option value ="35">35</option>
+							<option value ="36">36</option>
+							<option value ="37">37</option>
+							<option value ="38">38</option>
+							<option value ="39">39</option>
+							<option value ="40">40</option>
+							<option value ="41">41</option>
+							<option value ="42">42</option>
+							<option value ="43">43</option>
+							<option value ="44">44</option>
+							<option value ="45">45</option>
+							<option value ="46">46</option>
+							<option value ="47">47</option>
+							<option value ="48">48</option>
+							<option value ="49">49</option>
+							<option value ="50">50</option>
+							<option value ="51">51</option>
+							<option value ="52">52</option>
+							<option value ="53">53</option>
+							<option value ="54">54</option>
+							<option value ="55">55</option>
+							<option value ="56">56</option>
+							<option value ="57">57</option>
+							<option value ="58">58</option>
+							<option value ="59">59</option>
+						</select>
+							&nbsp;到
+						<select name="cbx_SS_range_to" class="easyui-combobox" style="width:50px" data-options="editable:false,disabled:true">
+							<option value ="0">0</option>
+							<option value ="1">1</option>
+							<option value ="2">2</option>
+							<option value ="3">3</option>
+							<option value ="4">4</option>
+							<option value ="5">5</option>
+							<option value ="6">6</option>
+							<option value ="7">7</option>
+							<option value ="8">8</option>
+							<option value ="9">9</option>
+							<option value ="10">10</option>
+							<option value ="11">11</option>
+							<option value ="12">12</option>
+							<option value ="13">13</option>
+							<option value ="14">14</option>
+							<option value ="15">15</option>
+							<option value ="16">16</option>
+							<option value ="17">17</option>
+							<option value ="18">18</option>
+							<option value ="19">19</option>
+							<option value ="20">20</option>
+							<option value ="21">21</option>
+							<option value ="22">22</option>
+							<option value ="23">23</option>
+							<option value ="24">24</option>
+							<option value ="25">25</option>
+							<option value ="26">26</option>
+							<option value ="27">27</option>
+							<option value ="28">28</option>
+							<option value ="29">29</option>
+							<option value ="30">30</option>
+							<option value ="31">31</option>
+							<option value ="32">32</option>
+							<option value ="33">33</option>
+							<option value ="34">34</option>
+							<option value ="35">35</option>
+							<option value ="36">36</option>
+							<option value ="37">37</option>
+							<option value ="38">38</option>
+							<option value ="39">39</option>
+							<option value ="40">40</option>
+							<option value ="41">41</option>
+							<option value ="42">42</option>
+							<option value ="43">43</option>
+							<option value ="44">44</option>
+							<option value ="45">45</option>
+							<option value ="46">46</option>
+							<option value ="47">47</option>
+							<option value ="48">48</option>
+							<option value ="49">49</option>
+							<option value ="50">50</option>
+							<option value ="51">51</option>
+							<option value ="52">52</option>
+							<option value ="53">53</option>
+							<option value ="54">54</option>
+							<option value ="55">55</option>
+							<option value ="56">56</option>
+							<option value ="57">57</option>
+							<option value ="58">58</option>
+							<option value ="59" selected="selected">59</option>
+						</select>
+						&nbsp;&nbsp;
+						<input type="radio" name="rb_SS" value="all" onclick="checkAction(this, 'SS');" checked="checked"><span>全部</span>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<input type="checkbox" name="cb_SS_freq" disabled="disabled"><span>执行间隔</span>
+						<select name="cbx_SS_freq" class="easyui-combobox" style="width:50px" data-options="editable:false,disabled:true">
+							<option value ="1" selected="selected">1</option>
+							<option value ="2">2</option>
+							<option value ="3">3</option>
+							<option value ="4">4</option>
+							<option value ="5">5</option>
+							<option value ="6">6</option>
+							<option value ="7">7</option>
+							<option value ="8">8</option>
+							<option value ="9">9</option>
+							<option value ="10">10</option>
+							<option value ="11">11</option>
+							<option value ="12">12</option>
+							<option value ="13">13</option>
+							<option value ="14">14</option>
+							<option value ="15">15</option>
+							<option value ="16">16</option>
+							<option value ="17">17</option>
+							<option value ="18">18</option>
+							<option value ="19">19</option>
+							<option value ="20">20</option>
+							<option value ="21">21</option>
+							<option value ="22">22</option>
+							<option value ="23">23</option>
+							<option value ="24">24</option>
+							<option value ="25">25</option>
+							<option value ="26">26</option>
+							<option value ="27">27</option>
+							<option value ="28">28</option>
+							<option value ="29">29</option>
+							<option value ="30">30</option>
+							<option value ="31">31</option>
+							<option value ="32">32</option>
+							<option value ="33">33</option>
+							<option value ="34">34</option>
+							<option value ="35">35</option>
+							<option value ="36">36</option>
+							<option value ="37">37</option>
+							<option value ="38">38</option>
+							<option value ="39">39</option>
+							<option value ="40">40</option>
+							<option value ="41">41</option>
+							<option value ="42">42</option>
+							<option value ="43">43</option>
+							<option value ="44">44</option>
+							<option value ="45">45</option>
+							<option value ="46">46</option>
+							<option value ="47">47</option>
+							<option value ="48">48</option>
+							<option value ="49">49</option>
+							<option value ="50">50</option>
+							<option value ="51">51</option>
+							<option value ="52">52</option>
+							<option value ="53">53</option>
+							<option value ="54">54</option>
+							<option value ="55">55</option>
+							<option value ="56">56</option>
+							<option value ="57">57</option>
+							<option value ="58">58</option>
+							<option value ="59">59</option>
+						</select>
+				</div><br>
+			</div>
+		</div>
+	</div>
 </body>
 </html>
