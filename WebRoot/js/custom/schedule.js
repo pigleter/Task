@@ -287,7 +287,7 @@ function switchSchedule(obj, checked){
 }
 
 function checkAction(obj, objType){
-	var cb_check = $(obj)[0];
+	var checkBtn = $(obj)[0];
 	var cbs_M = $('#pl_M').find("[name='cb_M']");
 	var cb_M_All = $('#pl_M').find("[name='cb_M_All']")[0];
 	var cbs_W = $('#pl_W').find("[name='cb_W']");
@@ -295,16 +295,31 @@ function checkAction(obj, objType){
 	var cbs_D = $('#pl_D').find("[name='cb_D']");
 	var cb_D_All = $('#pl_D').find("[name='cb_D_All']")[0];
 	var cb_D_Last = $('#pl_D').find("[name='cb_D_Last']")[0];
+	var cbx_HH_spec = $('#cbx_HH_spec');
+	var cbx_HH_range_from = $('#cbx_HH_range_from');
+	var cbx_HH_range_to = $('#cbx_HH_range_to');
+	var cbx_HH_freq = $('#cbx_HH_freq');
+	var cb_HH_freq = $('#pl_HH').find("[name='cb_HH_freq']")[0];
+	var cbx_MM_spec = $('#cbx_MM_spec');
+	var cbx_MM_range_from = $('#cbx_MM_range_from');
+	var cbx_MM_range_to = $('#cbx_MM_range_to');
+	var cbx_MM_freq = $('#cbx_MM_freq');
+	var cb_MM_freq = $('#pl_MM').find("[name='cb_MM_freq']")[0];
+	var cbx_SS_spec = $('#cbx_SS_spec');
+	var cbx_SS_range_from = $('#cbx_SS_range_from');
+	var cbx_SS_range_to = $('#cbx_SS_range_to');
+	var cbx_SS_freq = $('#cbx_SS_freq');
+	var cb_SS_freq = $('#pl_SS').find("[name='cb_SS_freq']")[0];
 	switch(objType)
 	{
 	case 'M':
-		if(cb_check.value == "*"){
+		if(checkBtn.value == "*"){
 			for(var i=0; i<cbs_M.length; i++){
 				cbs_M[i].checked = cb_M_All.checked;
 			}
 		}
 		else{
-			if(cb_check.checked){
+			if(checkBtn.checked){
 				for(var i=0; i<cbs_M.length; i++){
 					if(!cbs_M[i].checked){
 						break;
@@ -320,13 +335,13 @@ function checkAction(obj, objType){
 		}
 		break;
 	case 'W':
-		if(cb_check.value == "*"){
+		if(checkBtn.value == "*"){
 			for(var i=0; i<cbs_W.length; i++){
 				cbs_W[i].checked = cb_W_All.checked;
 			}
 		}
 		else{
-			if(cb_check.checked){
+			if(checkBtn.checked){
 				for(var i=0; i<cbs_W.length; i++){
 					if(!cbs_W[i].checked){
 						break;
@@ -342,14 +357,14 @@ function checkAction(obj, objType){
 		}
 		break;
 	case 'D':
-		if(cb_check.value == "*"){
+		if(checkBtn.value == "*"){
 			for(var i=0; i<cbs_D.length; i++){
 				cbs_D[i].checked = cb_D_All.checked;
 			}
 			cb_D_Last.checked = false;
 		}
-		else if(cb_check.value == "l"){
-			if(cb_check.checked){
+		else if(checkBtn.value == "l"){
+			if(checkBtn.checked){
 				for(var i=0; i<cbs_D.length; i++){
 					cbs_D[i].checked = false;
 				}
@@ -357,7 +372,7 @@ function checkAction(obj, objType){
 			}
 		}
 		else{
-			if(cb_check.checked){
+			if(checkBtn.checked){
 				for(var i=0; i<cbs_D.length; i++){
 					if(!cbs_D[i].checked){
 						break;
@@ -374,10 +389,73 @@ function checkAction(obj, objType){
 		}
 		break;
 	case 'HH':
+		if(checkBtn.value == "spec"){
+			cbx_HH_spec.combobox('enable');
+			cbx_HH_range_from.combobox('disable');
+			cbx_HH_range_to.combobox('disable');
+			cbx_HH_freq.combobox('disable');
+			cb_HH_freq.disabled = true;
+		}
+		else if(checkBtn.value == "range"){
+			cbx_HH_spec.combobox('disable');
+			cbx_HH_range_from.combobox('enable');
+			cbx_HH_range_to.combobox('enable');
+			cbx_HH_freq.combobox('enable');
+			cb_HH_freq.disabled = false;
+		}
+		else if(checkBtn.value == "all"){
+			cbx_HH_spec.combobox('disable');
+			cbx_HH_range_from.combobox('disable');
+			cbx_HH_range_to.combobox('disable');
+			cbx_HH_freq.combobox('enable');
+			cb_HH_freq.disabled = false;
+		}
 		break;
 	case 'MM':
+		if(checkBtn.value == "spec"){
+			cbx_MM_spec.combobox('enable');
+			cbx_MM_range_from.combobox('disable');
+			cbx_MM_range_to.combobox('disable');
+			cbx_MM_freq.combobox('disable');
+			cb_MM_freq.disabled = true;
+		}
+		else if(checkBtn.value == "range"){
+			cbx_MM_spec.combobox('disable');
+			cbx_MM_range_from.combobox('enable');
+			cbx_MM_range_to.combobox('enable');
+			cbx_MM_freq.combobox('enable');
+			cb_MM_freq.disabled = false;
+		}
+		else if(checkBtn.value == "all"){
+			cbx_MM_spec.combobox('disable');
+			cbx_MM_range_from.combobox('disable');
+			cbx_MM_range_to.combobox('disable');
+			cbx_MM_freq.combobox('enable');
+			cb_MM_freq.disabled = false;
+		}
 		break;
 	case 'SS':
+		if(checkBtn.value == "spec"){
+			cbx_SS_spec.combobox('enable');
+			cbx_SS_range_from.combobox('disable');
+			cbx_SS_range_to.combobox('disable');
+			cbx_SS_freq.combobox('disable');
+			cb_SS_freq.disabled = true;
+		}
+		else if(checkBtn.value == "range"){
+			cbx_SS_spec.combobox('disable');
+			cbx_SS_range_from.combobox('enable');
+			cbx_SS_range_to.combobox('enable');
+			cbx_SS_freq.combobox('enable');
+			cb_SS_freq.disabled = false;
+		}
+		else if(checkBtn.value == "all"){
+			cbx_SS_spec.combobox('disable');
+			cbx_SS_range_from.combobox('disable');
+			cbx_SS_range_to.combobox('disable');
+			cbx_SS_freq.combobox('enable');
+			cb_SS_freq.disabled = false;
+		}
 		break;
 	}
 }
@@ -500,32 +578,19 @@ function setPanel(obj, plType, val){
 }
 
 function initPanel(rowIndex, row){
-	var v_M;
-	var v_W;
-	var v_D;
-	var t = "";
-	var cbs_M = $('#pl_M').find("[name='cb_M']");
-	var cbs_W = $('#pl_W').find("[name='cb_W']");
-	var cbs_D = $('#pl_D').find("[name='cb_D']");
-	var cb_M_All = $('#pl_M').find("[name='cb_M_All']")[0];
-	var cb_W_All = $('#pl_W').find("[name='cb_W_All']")[0];
-	var cb_D_All = $('#pl_D').find("[name='cb_D_All']")[0];
-	var cb_D_Last = $('#pl_D').find("[name='cb_D_Last']")[0];
-	if(row.M != null && row.M != ""){
-		v_M = row.M.split("");
+	var btnSwitch = $($($($('#dg_schedule').parents())[0]).find('.easyui-switchbutton'))[rowIndex];
+	var cbs = $('#win_plan').find("[type='checkbox']");
+	var rbs = $('#win_plan').find("[type='radio']");
+	var cbxs = $('#win_plan').find('.easyui-combobox');
+	for(var i=0; i<cbs.length; i++){
+		cbs[i].disabled = $(btnSwitch).prop('checked');		
 	}
-	if(row.W != null && row.W != ""){
-		v_W = row.W.split("");
+	for(var i=0; i<rbs.length; i++){
+		rbs[i].disabled = $(btnSwitch).prop('checked');
 	}
-	if(row.D != null && row.D != ""){
-		v_D = row.D.split("");
-	}
-	if(typeof(v_M) != "undefined"){
-		for(var i=0; i<v_M.length; i++){
-			
-		}
-	}
-	
+	for(var i=0; i<cbxs.length; i++){
+		$(cbxs[i]).combobox({disabled:$(btnSwitch).prop('checked')});
+	}	
 }
 
 function moreSchedule(obj){

@@ -144,7 +144,7 @@
 				<div id="pl_HH" class="easyui-panel" data-options="title:'小时',border:false">
 					<br>&nbsp;
 					<input type="radio" name="rb_HH" value="spec" onclick="checkAction(this, 'HH');" checked="checked"><span>指定</span>
-						<select name="cbx_HH_spec" class="easyui-combobox" style="width:50px" data-options="editable:false,disabled:true,multiple:true">
+						<select id="cbx_HH_spec" class="easyui-combobox" style="width:50px" data-options="editable:false,multiple:true">
 							<option value ="0" selected="selected">0</option>
 							<option value ="1">1</option>
 							<option value ="2">2</option>
@@ -172,7 +172,7 @@
 						</select>
 						&nbsp;&nbsp;
 					<input type="radio" name="rb_HH" value="range" onclick="checkAction(this, 'HH');"><span>范围</span>
-						<select name="cbx_HH_range_from" class="easyui-combobox" style="width:50px" data-options="editable:false,disabled:true">
+						<select id="cbx_HH_range_from" class="easyui-combobox" style="width:50px" data-options="editable:false,disabled:true">
 							<option value ="0" selected="selected">0</option>
 							<option value ="1">1</option>
 							<option value ="2">2</option>
@@ -199,7 +199,7 @@
 							<option value ="23">23</option>
 						</select>
 						&nbsp;到
-						<select name="cbx_HH_range_to" class="easyui-combobox" style="width:50px" data-options="editable:false,disabled:true">
+						<select id="cbx_HH_range_to" class="easyui-combobox" style="width:50px" data-options="editable:false,disabled:true">
 							<option value ="0">0</option>
 							<option value ="1">1</option>
 							<option value ="2">2</option>
@@ -229,7 +229,7 @@
 					<input type="radio" name="rb_HH" value="all" onclick="checkAction(this, 'HH');"><span>全部</span>&nbsp;&nbsp;
 						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 						<input type="checkbox" name="cb_HH_freq" disabled="disabled"><span>执行间隔</span>
-						<select name="cbx_HH_freq" class="easyui-combobox" style="width:50px" data-options="editable:false,disabled:true">
+						<select id="cbx_HH_freq" class="easyui-combobox" style="width:50px" data-options="editable:false,disabled:true">
 							<option value ="1" selected="selected">1</option>
 							<option value ="2">2</option>
 							<option value ="3">3</option>
@@ -258,7 +258,7 @@
 				<div id="pl_MM" class="easyui-panel" data-options="title:'分钟',border:false">
 					<br>&nbsp;
 					<input type="radio" name="rb_MM" value="spec" onclick="checkAction(this, 'MM');" checked="checked"><span>指定</span>
-						<select name="cbx_MM_spec" class="easyui-combobox" style="width:50px" data-options="editable:false,disabled:true,multiple:true">
+						<select id="cbx_MM_spec" class="easyui-combobox" style="width:50px" data-options="editable:false,multiple:true">
 							<option value ="0" selected="selected">0</option>
 							<option value ="1">1</option>
 							<option value ="2">2</option>
@@ -322,7 +322,7 @@
 						</select>
 						&nbsp;&nbsp;
 					<input type="radio" name="rb_MM" value="range" onclick="checkAction(this, 'MM');"><span>范围</span>
-						<select name="cbx_MM_range_from" class="easyui-combobox" style="width:50px" data-options="editable:false,disabled:true">
+						<select id="cbx_MM_range_from" class="easyui-combobox" style="width:50px" data-options="editable:false,disabled:true">
 							<option value ="0" selected="selected">0</option>
 							<option value ="1">1</option>
 							<option value ="2">2</option>
@@ -385,7 +385,7 @@
 							<option value ="59">59</option>
 						</select>
 						&nbsp;到
-						<select name="cbx_MM_range_to" class="easyui-combobox" style="width:50px" data-options="editable:false,disabled:true">
+						<select id="cbx_MM_range_to" class="easyui-combobox" style="width:50px" data-options="editable:false,disabled:true">
 							<option value ="0">0</option>
 							<option value ="1">1</option>
 							<option value ="2">2</option>
@@ -451,7 +451,7 @@
 					<input type="radio" name="rb_MM" value="all" onclick="checkAction(this, 'MM');"><span>全部</span>
 						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 						<input type="checkbox" name="cb_MM_freq" disabled="disabled"><span>执行间隔</span>
-						<select name="cbx_MM_freq" class="easyui-combobox" style="width:50px" data-options="editable:false,disabled:true">
+						<select id="cbx_MM_freq" class="easyui-combobox" style="width:50px" data-options="editable:false,disabled:true">
 							<option value ="1" selected="selected">1</option>
 							<option value ="2">2</option>
 							<option value ="3">3</option>
@@ -513,10 +513,10 @@
 							<option value ="59">59</option>
 						</select>
 				</div><br>
-				<div id="pl_DD" class="easyui-panel" data-options="title:'秒钟',border:false">
+				<div id="pl_SS" class="easyui-panel" data-options="title:'秒钟',border:false">
 					<br>&nbsp;
 					<input type="radio" name="rb_SS" value="spec" onclick="checkAction(this, 'SS');" checked="checked"><span>指定</span>
-						<select name="cbx_SS_spec" class="easyui-combobox" style="width:50px" data-options="editable:false,disabled:true">
+						<select id="cbx_SS_spec" class="easyui-combobox" style="width:50px" data-options="editable:false,multiple:true">
 							<option value ="0" selected="selected">0</option>
 							<option value ="1">1</option>
 							<option value ="2">2</option>
@@ -580,7 +580,7 @@
 						</select>
 						&nbsp;&nbsp;
 					<input type="radio" name="rb_SS" value="range" onclick="checkAction(this, 'SS');"><span>范围</span>
-						<select name="cbx_SS_range_from" class="easyui-combobox" style="width:50px" data-options="editable:false,disabled:true">
+						<select id="cbx_SS_range_from" class="easyui-combobox" style="width:50px" data-options="editable:false,disabled:true">
 							<option value ="0" selected="selected">0</option>
 							<option value ="1">1</option>
 							<option value ="2">2</option>
@@ -643,7 +643,7 @@
 							<option value ="59">59</option>
 						</select>
 							&nbsp;到
-						<select name="cbx_SS_range_to" class="easyui-combobox" style="width:50px" data-options="editable:false,disabled:true">
+						<select id="cbx_SS_range_to" class="easyui-combobox" style="width:50px" data-options="editable:false,disabled:true">
 							<option value ="0">0</option>
 							<option value ="1">1</option>
 							<option value ="2">2</option>
@@ -709,7 +709,7 @@
 						<input type="radio" name="rb_SS" value="all" onclick="checkAction(this, 'SS');"><span>全部</span>
 						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 						<input type="checkbox" name="cb_SS_freq" disabled="disabled"><span>执行间隔</span>
-						<select name="cbx_SS_freq" class="easyui-combobox" style="width:50px" data-options="editable:false,disabled:true">
+						<select id="cbx_SS_freq" class="easyui-combobox" style="width:50px" data-options="editable:false,disabled:true">
 							<option value ="1" selected="selected">1</option>
 							<option value ="2">2</option>
 							<option value ="3">3</option>
