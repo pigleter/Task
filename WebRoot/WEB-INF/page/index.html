@@ -72,10 +72,10 @@
 	<div id="win_plan" class="easyui-window" title="调度设置" style="width:700px;height:630px"
         data-options="modal:true,closable:false,maximizable:false,minimizable:false,collapsible:false,resizable:false,closed:true">
 		<div class="easyui-layout" data-options="fit:true">
-			<div id="scheduleID" style="visibility:hidden;"></div>
+			<div id="scheduleIndex" style="visibility:hidden;"></div>
 			<div data-options="region:'south',noheader:'true',border:false" style="height:35px;text-align:right">
-				<a id="btn_save_plan" href="#" class="easyui-linkbutton" data-options="text:'保存',iconCls:'icon-save'"></a>&nbsp;
-				<a id="btn_cancel_plan" class="easyui-linkbutton" data-options="text:'取消',iconCls:'icon-cancel'" onclick="closeWinPlan();"></a>&nbsp;
+				<a id="btn_save_plan" class="easyui-linkbutton" data-options="text:'保存',iconCls:'icon-save'" onclick="saveSchedulePlan();">保存</a>&nbsp;
+				<a id="btn_cancel_plan" class="easyui-linkbutton" data-options="text:'取消',iconCls:'icon-cancel'" onclick="closeWinPlan();">取消</a>&nbsp;
 			</div>
 			<div data-options="region:'center',noheader:'true',border:false">
 				<div id="pl_M" class="easyui-panel" data-options="title:'月份',border:false">

@@ -29,18 +29,10 @@ function renderButton(){
 		var btn_save = $($($($(btn_swit[i]).parents('.datagrid-row'))[0]).find('.easyui-linkbutton_save'))[0];
 		var btn_undo = $($($($(btn_swit[i]).parents('.datagrid-row'))[0]).find('.easyui-linkbutton_undo'))[0];
 		var btn_dele = $($($($(btn_swit[i]).parents('.datagrid-row'))[0]).find('.easyui-linkbutton_dele'))[0];
-		if($(btn_swit[i]).prop('checked')){
-			$(btn_edit).linkbutton('disable');
-			$(btn_save).linkbutton('disable');
-			$(btn_undo).linkbutton('disable');
-			$(btn_dele).linkbutton('disable');
-		}
-		else{
-			$(btn_edit).linkbutton('enable');
-			$(btn_save).linkbutton('enable');
-			$(btn_undo).linkbutton('enable');
-			$(btn_dele).linkbutton('enable');
-		}
+		$(btn_edit).linkbutton({disabled:$(btn_swit[i]).prop('checked')});
+		$(btn_save).linkbutton({disabled:$(btn_swit[i]).prop('checked')});
+		$(btn_undo).linkbutton({disabled:$(btn_swit[i]).prop('checked')});
+		$(btn_dele).linkbutton({disabled:$(btn_swit[i]).prop('checked')});
 	}
 }
 
