@@ -48,6 +48,10 @@ function showScheduleData(){
 	    idField:'id',
 	    singleSelect:'true',
 	    scrollbarSize:0,
+	    striped:true,
+	    rowStyler:function(index, row){
+	    	return 'height:35px;'
+	    },
         toolbar:[{
 			iconCls:'icon-add',
 			text:'新增',
@@ -63,7 +67,7 @@ function showScheduleData(){
 		}],
 	    columns:[
 	    	[
-	    		{field:'status',title:'启停',width:'10%',
+	    		{field:'status',title:'启停',width:'8%',
 		        	formatter:function(value){
 		        		var check;
 		        		if(value == 1){
@@ -77,7 +81,7 @@ function showScheduleData(){
 					}
 		        },
 		        {field:'id',title:'ID',width:'5%'},
-		        {field:'schedule_desc',title:'调度描述',width:'20%',
+		        {field:'schedule_desc',title:'调度描述',width:'15%',
 		        	editor:{
 		        		type:'validatebox',
 		        		options:{
@@ -105,13 +109,13 @@ function showScheduleData(){
 	                	}
 		        	}
 		        },
-		        {field:'M',title:'月'},
-		        {field:'W',title:'周'},
-		        {field:'D',title:'日'},
-		        {field:'HH',title:'时'},
-		        {field:'MM',title:'分'},
-		        {field:'SS',title:'秒'},
-		        {field:'opt',title:'操作',width:'15%',
+		        {field:'M',title:'月',width:'5%'},
+		        {field:'W',title:'周',width:'5%'},
+		        {field:'D',title:'日',width:'5%'},
+		        {field:'HH',title:'时',width:'5%'},
+		        {field:'MM',title:'分',width:'5%'},
+		        {field:'SS',title:'秒',width:'5%'},
+		        {field:'opt',title:'操作',
 		        	formatter:function(value,row,index){
 		        		var btn='<a class="easyui-linkbutton_edit" onclick="editSchedule(this);">编辑</a>  '
 						+'<a class="easyui-linkbutton_save" onclick="saveSchedule(this);" style="display:none">保存</a>  '
@@ -831,10 +835,12 @@ function checkInput(){
 	var isCheck_M = false;
 	var isCheck_W = false;
 	var isCheck_D = false;
+	var isCheck_D_count = false;
 	var isCheck_HH = false;
 	var isCheck_MM = false;
 	var isCheck_SS = false;
 	var isCheck = false;
+	var dCount;
 	for(var i=0; i<cbs_M.length; i++){
 		if(cbs_M[i].checked){
 			isCheck_M = true;
@@ -847,11 +853,18 @@ function checkInput(){
 			break;
 		}
 	}
+	dCount = 0;
 	for(var i=0; i<cbs_D.length; i++){
 		if(cbs_D[i].checked){
 			isCheck_D = true;
-			break;
+			dCount = dCount + 1;
 		}
+	}
+	if(dCount <= 20){
+		isCheck_D_count = true;
+	}
+	if(cb_D_Last.checked){
+		isCheck_D = true;
 	}
 	for(var i=0; i<rb_HH.length; i++){
 		if(rb_HH[i].checked){
@@ -895,7 +908,7 @@ function checkInput(){
 			}
 		}
 	}
-	if(isCheck_M && isCheck_W && isCheck_D && isCheck_HH && isCheck_MM && isCheck_SS){
+	if(isCheck_M && isCheck_W && isCheck_D && isCheck_D_count && isCheck_HH && isCheck_MM && isCheck_SS){
 		isCheck = true;
 	}
 	else{
@@ -908,6 +921,9 @@ function checkInput(){
 		}
 		if(!isCheck_D){
 			msg = msg + "请设置月天<br>";
+		}
+		if(!isCheck_D_count){
+			msg = msg + "月天必须小于20天<br>";
 		}
 		if(!isCheck_HH){
 			msg = msg + "请设置小时<br>";
@@ -935,6 +951,12 @@ function saveSchedulePlan(){
 	
 	var rowIndex = $('#scheduleIndex').html();
 	var row = $('#dg_schedule').datagrid('getData').rows[rowIndex];
+	var oldM = row.M;
+	var oldW = row.W;
+	var oldD = row.D;
+	var oldHH = row.HH;
+	var oldMM = row.MM;
+	var oldSS = row.SS;
 	
 	row.M = "";
 	if(cb_M_All.checked){		
@@ -1035,14 +1057,19 @@ function saveSchedulePlan(){
 		}
 		else{
 			showMsg(data.msg);
-			editSchedule(obj);
+			row.M = oldM;
+			row.W = oldW;
+			row.D = oldD;
+			row.HH = oldHH;
+			row.MM = oldMM;
+			row.SS = oldSS;
 		}
-		//showButton(obj,'save');
 		renderButton();
     });
 	
 	
 	$('#win_plan').window('close');
+	$('#dg_schedule').datagrid('fitColumns');
 }
 
 function initController(){

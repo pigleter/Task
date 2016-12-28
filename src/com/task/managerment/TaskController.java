@@ -79,6 +79,11 @@ public class TaskController extends Controller {
 	
 	public void switchSchedule(){
 		Schedule schedule = getModel(Schedule.class, "schd");
+		Event event = getModel(Event.class);
+		List<Schedule> scheduleToSwitch = Schedule.dao.find("select * from z_schedule where id = " + schedule.getInt("id"));
+		if(scheduleToSwitch.get(0).getInt("event_id") > 0){
+			event.save();
+		}
 		try {			
 			if(schedule.update()){
 				schedule.put("result", true);

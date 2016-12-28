@@ -14,6 +14,10 @@ function showInterfaceData(){
 	    idField:'id',
 	    singleSelect:'true',
 	    scrollbarSize:0,
+	    striped:true,
+	    rowStyler:function(index, row){
+	    	return 'height:35px;'
+	    },
 	    toolbar:[{
 			iconCls:'icon-add',
 			text:'新增',
