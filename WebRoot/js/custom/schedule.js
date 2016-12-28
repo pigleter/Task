@@ -1,7 +1,41 @@
+var cbs;
+var rbs;
+var cbxs;	
+
+var cbs_M;
+var cb_M_All;
+var cbs_W;
+var cb_W_All;
+var cbs_D;
+var cb_D_All;
+var cb_D_Last;
+
+var cbx_HH_spec;
+var cbx_HH_range_from;
+var cbx_HH_range_to;
+var cbx_HH_freq;
+var rb_HH;
+
+var cbx_MM_spec;
+var cbx_MM_range_from;
+var cbx_MM_range_to;
+var cbx_MM_freq;
+var rb_MM;
+
+var cbx_SS_spec;
+var cbx_SS_range_from;
+var cbx_SS_range_to;
+var cbx_SS_freq;
+var rb_SS;
+
+var msg;
+
+
 function showSchedulePage(){
 	$.post("/task/getInterfaces",function(result){
 		interfaces = result;
-		showScheduleData()
+		showScheduleData();
+    	initController();
     });
 }
 
@@ -38,7 +72,7 @@ function showScheduleData(){
 		        		else{
 		        			check = false;
 		        		}
-		        		var btn='<input class="easyui-switchbutton" data-options="checked:'+check+'"> <a class="easyui-linkbutton_more" onclick="moreSchedule(this);">执行计划</a>  ';
+		        		var btn='<input class="easyui-switchbutton" data-options="checked:'+check+'">';
 					return btn;
 					}
 		        },
@@ -71,12 +105,19 @@ function showScheduleData(){
 	                	}
 		        	}
 		        },
-		        {field:'opt',title:'操作',width:'10%',
+		        {field:'M',title:'月'},
+		        {field:'W',title:'周'},
+		        {field:'D',title:'日'},
+		        {field:'HH',title:'时'},
+		        {field:'MM',title:'分'},
+		        {field:'SS',title:'秒'},
+		        {field:'opt',title:'操作',width:'15%',
 		        	formatter:function(value,row,index){
 		        		var btn='<a class="easyui-linkbutton_edit" onclick="editSchedule(this);">编辑</a>  '
 						+'<a class="easyui-linkbutton_save" onclick="saveSchedule(this);" style="display:none">保存</a>  '
 						+'<a class="easyui-linkbutton_undo" onclick="undoSchedule(this);" style="display:none">撤销</a>  '
-						+'<a class="easyui-linkbutton_dele" onclick="deleSchedule(this);">删除</a>';
+						+'<a class="easyui-linkbutton_dele" onclick="deleSchedule(this);">删除</a>  '
+						+'<a class="easyui-linkbutton_more" onclick="moreSchedule(this);">执行计划</a>'
 					return btn;
 					}
 		        }
@@ -87,13 +128,6 @@ function showScheduleData(){
 	    },
 	    onSelect:function(index){
 	    	$('#dg_schedule').datagrid('clearSelections');
-	    },
-	    onBeforeEdit:function(index){
-	    	//disableButton(index, true);
-	    },
-	    onBeginEdit:function(index){
-	    	//initPanel(index, "M");
-	    	//initPanel(index, "D");
 	    },
 	    onEndEdit:function(index){
 	    	disableButton(index, false);
@@ -208,6 +242,7 @@ function deleSchedule(obj){
 function addSchedule(obj){
 	$('#dg_schedule').datagrid('appendRow',{
 		id:"0",
+		status:"-1"
 	});
 	var rowIndex = $('#dg_schedule').datagrid('getRows').length-1;
 	var btn = $($($($('#dg_schedule').parents())[0]).find('.easyui-linkbutton_edit'))[rowIndex];
@@ -263,13 +298,17 @@ function switchSchedule(obj, checked){
 	var row = $('#dg_schedule').datagrid('getData').rows[rowIndex];
 	var status;
 	if(row.status == -1){
-		showMsg("请先设置调度计划！");
-		setTimeout(function(){
-			$(obj).switchbutton({checked:false});
-			showButton(obj,'switch');
-			renderButton();
-			},
-			500);	
+		$.messager.alert({
+			title:"系统提示",
+			msg:"请先设置调度计划！",
+			width:250,
+		    height:150,
+		    fn:function(){
+		    	$(obj).switchbutton({checked:false});
+				showButton(obj,'switch');
+				renderButton();
+				}
+		});
 		return;
 	}
 	if(checked){
@@ -298,28 +337,7 @@ function switchSchedule(obj, checked){
 
 function checkAction(obj, objType){
 	var checkBtn = $(obj)[0];
-	var cbs_M = $('#pl_M').find("[name='cb_M']");
-	var cb_M_All = $('#pl_M').find("[name='cb_M_All']")[0];
-	var cbs_W = $('#pl_W').find("[name='cb_W']");
-	var cb_W_All = $('#pl_W').find("[name='cb_W_All']")[0];
-	var cbs_D = $('#pl_D').find("[name='cb_D']");
-	var cb_D_All = $('#pl_D').find("[name='cb_D_All']")[0];
-	var cb_D_Last = $('#pl_D').find("[name='cb_D_Last']")[0];
-	var cbx_HH_spec = $('#cbx_HH_spec');
-	var cbx_HH_range_from = $('#cbx_HH_range_from');
-	var cbx_HH_range_to = $('#cbx_HH_range_to');
-	var cbx_HH_freq = $('#cbx_HH_freq');
-	var cb_HH_freq = $('#pl_HH').find("[name='cb_HH_freq']")[0];
-	var cbx_MM_spec = $('#cbx_MM_spec');
-	var cbx_MM_range_from = $('#cbx_MM_range_from');
-	var cbx_MM_range_to = $('#cbx_MM_range_to');
-	var cbx_MM_freq = $('#cbx_MM_freq');
-	var cb_MM_freq = $('#pl_MM').find("[name='cb_MM_freq']")[0];
-	var cbx_SS_spec = $('#cbx_SS_spec');
-	var cbx_SS_range_from = $('#cbx_SS_range_from');
-	var cbx_SS_range_to = $('#cbx_SS_range_to');
-	var cbx_SS_freq = $('#cbx_SS_freq');
-	var cb_SS_freq = $('#pl_SS').find("[name='cb_SS_freq']")[0];
+	
 	switch(objType)
 	{
 	case 'M':
@@ -403,22 +421,16 @@ function checkAction(obj, objType){
 			cbx_HH_spec.combobox('enable');
 			cbx_HH_range_from.combobox('disable');
 			cbx_HH_range_to.combobox('disable');
-			cbx_HH_freq.combobox('disable');
-			cb_HH_freq.disabled = true;
 		}
 		else if(checkBtn.value == "range"){
 			cbx_HH_spec.combobox('disable');
 			cbx_HH_range_from.combobox('enable');
 			cbx_HH_range_to.combobox('enable');
-			cbx_HH_freq.combobox('enable');
-			cb_HH_freq.disabled = false;
 		}
 		else if(checkBtn.value == "all"){
 			cbx_HH_spec.combobox('disable');
 			cbx_HH_range_from.combobox('disable');
 			cbx_HH_range_to.combobox('disable');
-			cbx_HH_freq.combobox('enable');
-			cb_HH_freq.disabled = false;
 		}
 		break;
 	case 'MM':
@@ -426,22 +438,16 @@ function checkAction(obj, objType){
 			cbx_MM_spec.combobox('enable');
 			cbx_MM_range_from.combobox('disable');
 			cbx_MM_range_to.combobox('disable');
-			cbx_MM_freq.combobox('disable');
-			cb_MM_freq.disabled = true;
 		}
 		else if(checkBtn.value == "range"){
 			cbx_MM_spec.combobox('disable');
 			cbx_MM_range_from.combobox('enable');
 			cbx_MM_range_to.combobox('enable');
-			cbx_MM_freq.combobox('enable');
-			cb_MM_freq.disabled = false;
 		}
 		else if(checkBtn.value == "all"){
 			cbx_MM_spec.combobox('disable');
 			cbx_MM_range_from.combobox('disable');
 			cbx_MM_range_to.combobox('disable');
-			cbx_MM_freq.combobox('enable');
-			cb_MM_freq.disabled = false;
 		}
 		break;
 	case 'SS':
@@ -449,116 +455,22 @@ function checkAction(obj, objType){
 			cbx_SS_spec.combobox('enable');
 			cbx_SS_range_from.combobox('disable');
 			cbx_SS_range_to.combobox('disable');
-			cbx_SS_freq.combobox('disable');
-			cb_SS_freq.disabled = true;
 		}
 		else if(checkBtn.value == "range"){
 			cbx_SS_spec.combobox('disable');
 			cbx_SS_range_from.combobox('enable');
 			cbx_SS_range_to.combobox('enable');
-			cbx_SS_freq.combobox('enable');
-			cb_SS_freq.disabled = false;
 		}
 		else if(checkBtn.value == "all"){
 			cbx_SS_spec.combobox('disable');
 			cbx_SS_range_from.combobox('disable');
 			cbx_SS_range_to.combobox('disable');
-			cbx_SS_freq.combobox('enable');
-			cb_SS_freq.disabled = false;
 		}
 		break;
 	}
-}
-
-function getText(value, valType){
-	if(typeof(value) == "undefined"){
-		return "";
-	}
-	var tx = "";
-	var d;
-	var ds;
-	switch(valType)
-	{
-	case 'M':
-		d = value.split("/");
-		if(d[0] == "*"){
-			tx = "全部月份中，每";
-		}
-		else{
-			ds = d[0].split(",");
-			for(var i=0; i<ds.length; i++){
-				switch(ds[i])
-				{
-				case '1':
-					tx = tx + "一月，";
-					break;
-				case '2':
-					tx = tx + "二月，";
-					break;
-				case '3':
-					tx = tx + "三月，";
-					break;
-				case '4':
-					tx = tx + "四月，";
-					break;
-				case '5':
-					tx = tx + "五月，";
-					break;
-				case '6':
-					tx = tx + "六月，";
-					break;
-				case '7':
-					tx = tx + "七月，";
-					break;
-				case '8':
-					tx = tx + "八月，";
-					break;
-				case '9':
-					tx = tx + "九月，";
-					break;
-				case '10':
-					tx = tx + "十月，";
-					break;
-				case '11':
-					tx = tx + "十一月，";
-					break;
-				case '12':
-					tx = tx + "十二月，";
-					break;
-				}
-			}
-			tx = tx.substr(0, tx.length - 1) + "中，每";
-		}
-		if(typeof(d[1]) == "undefined"){
-			tx = tx + "1个月执行";
-		}
-		else{
-			tx = tx + d[1] + "个月执行";
-		}
-		break;
-	}
-	return tx;
 }
 
 function initPanel(){
-	var cbs = $('#win_plan').find("[type='checkbox']");
-	var rbs = $('#win_plan').find("[type='radio']");
-	var cbxs = $('#win_plan').find('.easyui-combobox');
-	
-	var cbx_HH_spec = $('#cbx_HH_spec');
-	var cbx_HH_range_from = $('#cbx_HH_range_from');
-	var cbx_HH_range_to = $('#cbx_HH_range_to');
-	var cbx_HH_freq = $('#cbx_HH_freq');
-	
-	var cbx_MM_spec = $('#cbx_MM_spec');
-	var cbx_MM_range_from = $('#cbx_MM_range_from');
-	var cbx_MM_range_to = $('#cbx_MM_range_to');
-	var cbx_MM_freq = $('#cbx_MM_freq');
-	
-	var cbx_SS_spec = $('#cbx_SS_spec');
-	var cbx_SS_range_from = $('#cbx_SS_range_from');
-	var cbx_SS_range_to = $('#cbx_SS_range_to');
-	var cbx_SS_freq = $('#cbx_SS_freq');
 	
 	for(var i=0; i<cbs.length; i++){
 		cbs[i].disabled = false;
@@ -571,61 +483,30 @@ function initPanel(){
 			rbs[i].checked = true;
 		}
 	}
-	for(var i=0; i<cbxs.length; i++){
-		$(cbxs[i]).combobox({disabled:false});
-	}
+
+	$(cbx_HH_spec).combobox({disabled:false});
 	$(cbx_HH_spec).combobox({value:0});
 	$(cbx_HH_range_from).combobox({value:0});
 	$(cbx_HH_range_to).combobox({value:23});
-	$(cbx_HH_freq).combobox({value:1});
+	$(cbx_HH_freq).combobox({value:1,disabled:false});
 
+	$(cbx_MM_spec).combobox({disabled:false});
 	$(cbx_MM_spec).combobox({value:0});
 	$(cbx_MM_range_from).combobox({value:0});
 	$(cbx_MM_range_to).combobox({value:59});
-	$(cbx_MM_freq).combobox({value:1});
+	$(cbx_MM_freq).combobox({value:1,disabled:false});
 	
+	$(cbx_SS_spec).combobox({disabled:false});
 	$(cbx_SS_spec).combobox({value:0});
 	$(cbx_SS_range_from).combobox({value:0});
 	$(cbx_SS_range_to).combobox({value:59});
-	$(cbx_SS_freq).combobox({value:1});
+	$(cbx_SS_freq).combobox({value:1,disabled:false});
 	
 }
 
 function setPanel(rowIndex, row){
 	
 	var btnSwitch = $($($($('#dg_schedule').parents())[0]).find('.easyui-switchbutton'))[rowIndex];
-	var cbs = $('#win_plan').find("[type='checkbox']");
-	var rbs = $('#win_plan').find("[type='radio']");
-	var cbxs = $('#win_plan').find('.easyui-combobox');	
-	
-	var cbs_M = $('#pl_M').find("[name='cb_M']");
-	var cb_M_All = $('#pl_M').find("[name='cb_M_All']")[0];
-	var cbs_W = $('#pl_W').find("[name='cb_W']");
-	var cb_W_All = $('#pl_W').find("[name='cb_W_All']")[0];
-	var cbs_D = $('#pl_D').find("[name='cb_D']");
-	var cb_D_All = $('#pl_D').find("[name='cb_D_All']")[0];
-	var cb_D_Last = $('#pl_D').find("[name='cb_D_Last']")[0];
-	
-	var cbx_HH_spec = $('#cbx_HH_spec');
-	var cbx_HH_range_from = $('#cbx_HH_range_from');
-	var cbx_HH_range_to = $('#cbx_HH_range_to');
-	var cbx_HH_freq = $('#cbx_HH_freq');
-	var rb_HH = $('#pl_HH').find("[name='rb_HH']");
-	var cb_HH_freq = $('#pl_HH').find("[name='cb_HH_freq']")[0];
-	
-	var cbx_MM_spec = $('#cbx_MM_spec');
-	var cbx_MM_range_from = $('#cbx_MM_range_from');
-	var cbx_MM_range_to = $('#cbx_MM_range_to');
-	var cbx_MM_freq = $('#cbx_MM_freq');
-	var rb_MM = $('#pl_MM').find("[name='rb_MM']");
-	var cb_MM_freq = $('#pl_MM').find("[name='cb_MM_freq']")[0];
-	
-	var cbx_SS_spec = $('#cbx_SS_spec');
-	var cbx_SS_range_from = $('#cbx_SS_range_from');
-	var cbx_SS_range_to = $('#cbx_SS_range_to');
-	var cbx_SS_freq = $('#cbx_SS_freq');
-	var rb_SS = $('#pl_SS').find("[name='rb_SS']");
-	var cb_SS_freq = $('#pl_SS').find("[name='cb_SS_freq']")[0];
 	
 	var v_M;
 	var vs_M;
@@ -742,13 +623,22 @@ function setPanel(rowIndex, row){
 			}
 		}
 		if(v_HH_type == "spec"){
-			vs_HH = (row.HH.split(","));
+			v_HH = (row.HH.split("/"))[0];
+			vs_HH = (v_HH.split(","));
 			$(cbx_HH_spec).combobox({value:vs_HH});
-			cbx_HH_spec.combobox('enable');
-			cbx_HH_range_from.combobox('disable');
-			cbx_HH_range_to.combobox('disable');
-			cbx_HH_freq.combobox('disable');
-			cb_HH_freq.disabled = true;
+			$(cbx_HH_spec).combobox('enable');
+			$(cbx_HH_range_from).combobox('disable');
+			$(cbx_HH_range_to).combobox('disable');
+			if(vs_HH.length == 1){
+				$(cbx_HH_freq).combobox('enable');
+				if(v_HH_is_freq){
+					v_HH_freq = (row.HH.split("/"))[1];
+					$(cbx_HH_freq).combobox({value:v_HH_freq});
+				}				
+			}
+			else{
+				$(cbx_HH_freq).combobox('disable');
+			}
 		}
 		if(v_HH_type == "range"){
 			v_HH = (row.HH.split("/"))[0];
@@ -756,27 +646,23 @@ function setPanel(rowIndex, row){
 			v_HH_range_to = (v_HH.split("-"))[1];
 			$(cbx_HH_range_from).combobox({value:v_HH_range_from});
 			$(cbx_HH_range_to).combobox({value:v_HH_range_to});
-			cbx_HH_spec.combobox('disable');
-			cbx_HH_range_from.combobox('enable');
-			cbx_HH_range_to.combobox('enable');
-			cbx_HH_freq.combobox('enable');
-			cb_HH_freq.disabled = false;
+			$(cbx_HH_spec).combobox('disable');
+			$(cbx_HH_range_from).combobox('enable');
+			$(cbx_HH_range_to).combobox('enable');
+			$(cbx_HH_freq).combobox('enable');
 			if(v_HH_is_freq){
 				v_HH_freq = (row.HH.split("/"))[1];
 				$(cbx_HH_freq).combobox({value:v_HH_freq});
-				cb_HH_freq.checked = true;
 			}
 		}
 		if(v_HH_type == "all"){
-			cbx_HH_spec.combobox('disable');
-			cbx_HH_range_from.combobox('disable');
-			cbx_HH_range_to.combobox('disable');
-			cbx_HH_freq.combobox('enable');
-			cb_HH_freq.disabled = false;
+			$(cbx_HH_spec).combobox('disable');
+			$(cbx_HH_range_from).combobox('disable');
+			$(cbx_HH_range_to).combobox('disable');
+			$(cbx_HH_freq).combobox('enable');
 			if(v_HH_is_freq){
 				v_HH_freq = (row.HH.split("/"))[1];
 				$(cbx_HH_freq).combobox({value:v_HH_freq});
-				cb_HH_freq.checked = true;
 			}
 		}
 	}
@@ -801,13 +687,22 @@ function setPanel(rowIndex, row){
 			}
 		}
 		if(v_MM_type == "spec"){
-			vs_MM = (row.MM.split(","));
+			v_MM = (row.MM.split("/"))[0];
+			vs_MM = (v_MM.split(","));
 			$(cbx_MM_spec).combobox({value:vs_MM});
-			cbx_MM_spec.combobox('enable');
-			cbx_MM_range_from.combobox('disable');
-			cbx_MM_range_to.combobox('disable');
-			cbx_MM_freq.combobox('disable');
-			cb_MM_freq.disabled = true;
+			$(cbx_MM_spec).combobox('enable');
+			$(cbx_MM_range_from).combobox('disable');
+			$(cbx_MM_range_to).combobox('disable');			
+			if(vs_MM.length == 1){
+				$(cbx_MM_freq).combobox('enable');
+				if(v_MM_is_freq){
+					v_MM_freq = (row.MM.split("/"))[1];
+					$(cbx_MM_freq).combobox({value:v_MM_freq});
+				}				
+			}
+			else{
+				$(cbx_MM_freq).combobox('disable');
+			}
 		}
 		if(v_MM_type == "range"){
 			v_MM = (row.MM.split("/"))[0];
@@ -815,27 +710,23 @@ function setPanel(rowIndex, row){
 			v_MM_range_to = (v_MM.split("-"))[1];
 			$(cbx_MM_range_from).combobox({value:v_MM_range_from});
 			$(cbx_MM_range_to).combobox({value:v_MM_range_to});
-			cbx_MM_spec.combobox('disable');
-			cbx_MM_range_from.combobox('enable');
-			cbx_MM_range_to.combobox('enable');
-			cbx_MM_freq.combobox('enable');
-			cb_MM_freq.disabled = false;
+			$(cbx_MM_spec).combobox('disable');
+			$(cbx_MM_range_from).combobox('enable');
+			$(cbx_MM_range_to).combobox('enable');
+			$(cbx_MM_freq).combobox('enable');
 			if(v_MM_is_freq){
 				v_MM_freq = (row.MM.split("/"))[1];
 				$(cbx_MM_freq).combobox({value:v_MM_freq});
-				cb_MM_freq.checked = true;
 			}
 		}
 		if(v_MM_type == "all"){
-			cbx_MM_spec.combobox('disable');
-			cbx_MM_range_from.combobox('disable');
-			cbx_MM_range_to.combobox('disable');
-			cbx_MM_freq.combobox('enable');
-			cb_MM_freq.disabled = false;
+			$(cbx_MM_spec).combobox('disable');
+			$(cbx_MM_range_from).combobox('disable');
+			$(cbx_MM_range_to).combobox('disable');
+			$(cbx_MM_freq).combobox('enable');
 			if(v_MM_is_freq){
 				v_MM_freq = (row.MM.split("/"))[1];
 				$(cbx_MM_freq).combobox({value:v_MM_freq});
-				cb_MM_freq.checked = true;
 			}
 		}
 	}
@@ -860,13 +751,22 @@ function setPanel(rowIndex, row){
 			}
 		}
 		if(v_SS_type == "spec"){
-			vs_SS = (row.SS.split(","));
+			v_SS = (row.SS.split("/"))[0];
+			vs_SS = (v_SS.split(","));
 			$(cbx_SS_spec).combobox({value:vs_SS});
-			cbx_SS_spec.combobox('enable');
-			cbx_SS_range_from.combobox('disable');
-			cbx_SS_range_to.combobox('disable');
-			cbx_SS_freq.combobox('disable');
-			cb_SS_freq.disabled = true;
+			$(cbx_SS_spec).combobox('enable');
+			$(cbx_SS_range_from).combobox('disable');
+			$(cbx_SS_range_to).combobox('disable');			
+			if(vs_SS.length == 1){
+				$(cbx_SS_freq).combobox('enable');
+				if(v_SS_is_freq){
+					v_SS_freq = (row.SS.split("/"))[1];
+					$(cbx_SS_freq).combobox({value:v_SS_freq});
+				}				
+			}
+			else{
+				$(cbx_SS_freq).combobox('disable');
+			}
 		}
 		if(v_SS_type == "range"){
 			v_SS = (row.SS.split("/"))[0];
@@ -874,27 +774,23 @@ function setPanel(rowIndex, row){
 			v_SS_range_to = (v_SS.split("-"))[1];
 			$(cbx_SS_range_from).combobox({value:v_SS_range_from});
 			$(cbx_SS_range_to).combobox({value:v_SS_range_to});
-			cbx_SS_spec.combobox('disable');
-			cbx_SS_range_from.combobox('enable');
-			cbx_SS_range_to.combobox('enable');
-			cbx_SS_freq.combobox('enable');
-			cb_SS_freq.disabled = false;
+			$(cbx_SS_spec).combobox('disable');
+			$(cbx_SS_range_from).combobox('enable');
+			$(cbx_SS_range_to).combobox('enable');
+			$(cbx_SS_freq).combobox('enable');
 			if(v_SS_is_freq){
 				v_SS_freq = (row.SS.split("/"))[1];
 				$(cbx_SS_freq).combobox({value:v_SS_freq});
-				cb_SS_freq.checked = true;
 			}
 		}
 		if(v_SS_type == "all"){
-			cbx_SS_spec.combobox('disable');
-			cbx_SS_range_from.combobox('disable');
-			cbx_SS_range_to.combobox('disable');
-			cbx_SS_freq.combobox('enable');
-			cb_SS_freq.disabled = false;
+			$(cbx_SS_spec).combobox('disable');
+			$(cbx_SS_range_from).combobox('disable');
+			$(cbx_SS_range_to).combobox('disable');
+			$(cbx_SS_freq).combobox('enable');
 			if(v_SS_is_freq){
 				v_SS_freq = (row.SS.split("/"))[1];
 				$(cbx_SS_freq).combobox({value:v_SS_freq});
-				cb_SS_freq.checked = true;
 			}
 		}
 	}
@@ -931,38 +827,114 @@ function closeWinPlan(){
 	$('#win_plan').window('close');
 }
 
+function checkInput(){
+	var isCheck_M = false;
+	var isCheck_W = false;
+	var isCheck_D = false;
+	var isCheck_HH = false;
+	var isCheck_MM = false;
+	var isCheck_SS = false;
+	var isCheck = false;
+	for(var i=0; i<cbs_M.length; i++){
+		if(cbs_M[i].checked){
+			isCheck_M = true;
+			break;
+		}
+	}
+	for(var i=0; i<cbs_W.length; i++){
+		if(cbs_W[i].checked){
+			isCheck_W = true;
+			break;
+		}
+	}
+	for(var i=0; i<cbs_D.length; i++){
+		if(cbs_D[i].checked){
+			isCheck_D = true;
+			break;
+		}
+	}
+	for(var i=0; i<rb_HH.length; i++){
+		if(rb_HH[i].checked){
+			if(rb_HH[i].value == "spec"){
+				if($(cbx_HH_spec).combobox('getText') != ""){
+					isCheck_HH = true;
+					break;
+				}
+			}
+			else{
+				isCheck_HH = true;
+				break;
+			}
+		}
+	}
+	for(var i=0; i<rb_MM.length; i++){
+		if(rb_MM[i].checked){
+			if(rb_MM[i].value == "spec"){
+				if($(cbx_MM_spec).combobox('getText') != ""){
+					isCheck_MM = true;
+					break;
+				}
+			}
+			else{
+				isCheck_MM = true;
+				break;
+			}
+		}
+	}
+	for(var i=0; i<rb_SS.length; i++){
+		if(rb_SS[i].checked){
+			if(rb_SS[i].value == "spec"){
+				if($(cbx_SS_spec).combobox('getText') != ""){
+					isCheck_SS = true;
+					break;
+				}
+			}
+			else{
+				isCheck_SS = true;
+				break;
+			}
+		}
+	}
+	if(isCheck_M && isCheck_W && isCheck_D && isCheck_HH && isCheck_MM && isCheck_SS){
+		isCheck = true;
+	}
+	else{
+		msg = "";
+		if(!isCheck_M){
+			msg = msg + "请设置月份<br>";
+		}
+		if(!isCheck_W){
+			msg = msg + "请设置周天<br>";
+		}
+		if(!isCheck_D){
+			msg = msg + "请设置月天<br>";
+		}
+		if(!isCheck_HH){
+			msg = msg + "请设置小时<br>";
+		}
+		if(!isCheck_MM){
+			msg = msg + "请设置分钟<br>";
+		}
+		if(!isCheck_SS){
+			msg = msg + "请设置秒钟<br>";
+		}
+	}
+	return isCheck;
+}
+
 function saveSchedulePlan(){
+	if(!checkInput()){
+		$.messager.alert({
+			title:"系统提示",
+			msg:msg,
+			width:250,
+		    height:160
+		});
+		return;
+	}
+	
 	var rowIndex = $('#scheduleIndex').html();
 	var row = $('#dg_schedule').datagrid('getData').rows[rowIndex];
-	
-	var cbs_M = $('#pl_M').find("[name='cb_M']");
-	var cb_M_All = $('#pl_M').find("[name='cb_M_All']")[0];
-	var cbs_W = $('#pl_W').find("[name='cb_W']");
-	var cb_W_All = $('#pl_W').find("[name='cb_W_All']")[0];
-	var cbs_D = $('#pl_D').find("[name='cb_D']");
-	var cb_D_All = $('#pl_D').find("[name='cb_D_All']")[0];
-	var cb_D_Last = $('#pl_D').find("[name='cb_D_Last']")[0];
-	
-	var cbx_HH_spec = $('#cbx_HH_spec');
-	var cbx_HH_range_from = $('#cbx_HH_range_from');
-	var cbx_HH_range_to = $('#cbx_HH_range_to');
-	var cbx_HH_freq = $('#cbx_HH_freq');
-	var rb_HH = $('#pl_HH').find("[name='rb_HH']");
-	var cb_HH_freq = $('#pl_HH').find("[name='cb_HH_freq']")[0];
-	
-	var cbx_MM_spec = $('#cbx_MM_spec');
-	var cbx_MM_range_from = $('#cbx_MM_range_from');
-	var cbx_MM_range_to = $('#cbx_MM_range_to');
-	var cbx_MM_freq = $('#cbx_MM_freq');
-	var rb_MM = $('#pl_MM').find("[name='rb_MM']");
-	var cb_MM_freq = $('#pl_MM').find("[name='cb_MM_freq']")[0];
-	
-	var cbx_SS_spec = $('#cbx_SS_spec');
-	var cbx_SS_range_from = $('#cbx_SS_range_from');
-	var cbx_SS_range_to = $('#cbx_SS_range_to');
-	var cbx_SS_freq = $('#cbx_SS_freq');
-	var rb_SS = $('#pl_SS').find("[name='rb_SS']");
-	var cb_SS_freq = $('#pl_SS').find("[name='cb_SS_freq']")[0];
 	
 	row.M = "";
 	if(cb_M_All.checked){		
@@ -1017,7 +989,7 @@ function saveSchedulePlan(){
 			}
 		}		
 	}
-	if(cb_HH_freq.checked){
+	if(!$(cbx_HH_freq).combobox('options').disabled && $(cbx_HH_freq).combobox('getValue') != "1"){
 		row.HH = row.HH + "/" + $(cbx_HH_freq).combobox('getValue');
 	}
 	row.MM = "";
@@ -1034,7 +1006,7 @@ function saveSchedulePlan(){
 			}
 		}		
 	}
-	if(cb_MM_freq.checked){
+	if(!$(cbx_MM_freq).combobox('options').disabled && $(cbx_MM_freq).combobox('getValue') != "1"){
 		row.MM = row.MM + "/" + $(cbx_MM_freq).combobox('getValue');
 	}
 	row.SS = "";
@@ -1051,7 +1023,7 @@ function saveSchedulePlan(){
 			}
 		}		
 	}
-	if(cb_SS_freq.checked){
+	if(!$(cbx_SS_freq).combobox('options').disabled && $(cbx_SS_freq).combobox('getValue') != "1"){
 		row.SS = row.SS + "/" + $(cbx_SS_freq).combobox('getValue');
 	}
 	row.status = 0;
@@ -1059,6 +1031,7 @@ function saveSchedulePlan(){
 	$.post("/task/updateSchedule",{"schd.id":row.id,"schd.M":row.M,"schd.W":row.W,"schd.D":row.D,"schd.HH":row.HH,"schd.MM":row.MM,"schd.SS":row.SS,"schd.status":row.status},function(data){
 		if(data.result){
 			showMsg(data.msg);
+			$('#dg_schedule').datagrid('refreshRow',rowIndex);
 		}
 		else{
 			showMsg(data.msg);
@@ -1072,7 +1045,67 @@ function saveSchedulePlan(){
 	$('#win_plan').window('close');
 }
 
-function getPanel(row){
-	
-	
+function initController(){
+	cbs = $('#win_plan').find("[type='checkbox']");
+	rbs = $('#win_plan').find("[type='radio']");
+	cbxs = $('#win_plan').find('.easyui-combobox');	
+
+	cbs_M = $('#pl_M').find("[name='cb_M']");
+	cb_M_All = $('#pl_M').find("[name='cb_M_All']")[0];
+	cbs_W = $('#pl_W').find("[name='cb_W']");
+	cb_W_All = $('#pl_W').find("[name='cb_W_All']")[0];
+	cbs_D = $('#pl_D').find("[name='cb_D']");
+	cb_D_All = $('#pl_D').find("[name='cb_D_All']")[0];
+	cb_D_Last = $('#pl_D').find("[name='cb_D_Last']")[0];
+
+	cbx_HH_spec = $('#cbx_HH_spec');
+	cbx_HH_range_from = $('#cbx_HH_range_from');
+	cbx_HH_range_to = $('#cbx_HH_range_to');
+	cbx_HH_freq = $('#cbx_HH_freq');
+	rb_HH = $('#pl_HH').find("[name='rb_HH']");
+
+	cbx_MM_spec = $('#cbx_MM_spec');
+	cbx_MM_range_from = $('#cbx_MM_range_from');
+	cbx_MM_range_to = $('#cbx_MM_range_to');
+	cbx_MM_freq = $('#cbx_MM_freq');
+	rb_MM = $('#pl_MM').find("[name='rb_MM']");
+
+	cbx_SS_spec = $('#cbx_SS_spec');
+	cbx_SS_range_from = $('#cbx_SS_range_from');
+	cbx_SS_range_to = $('#cbx_SS_range_to');
+	cbx_SS_freq = $('#cbx_SS_freq');
+	rb_SS = $('#pl_SS').find("[name='rb_SS']");
+}
+
+function selectAction(rec, obj){
+	var vs = $(obj).combobox('getValues');
+	var objID = $(obj).prop("id");
+	if(vs.length > 1){
+		if(objID.indexOf("HH") >= 0){
+			$(cbx_HH_freq).combobox({value:1});
+			$(cbx_HH_freq).combobox('disable');
+		}
+		if(objID.indexOf("MM") >= 0){
+			$(cbx_MM_freq).combobox({value:1});
+			$(cbx_MM_freq).combobox('disable');		
+		}
+		if(objID.indexOf("SS") >= 0){
+			$(cbx_SS_freq).combobox({value:1});
+			$(cbx_SS_freq).combobox('disable');
+		}
+	}
+	else{
+		if(objID.indexOf("HH") >= 0){
+			$(cbx_HH_freq).combobox({value:1});
+			$(cbx_HH_freq).combobox('enable');
+		}
+		if(objID.indexOf("MM") >= 0){
+			$(cbx_MM_freq).combobox({value:1});
+			$(cbx_MM_freq).combobox('enable');		
+		}
+		if(objID.indexOf("SS") >= 0){
+			$(cbx_SS_freq).combobox({value:1});
+			$(cbx_SS_freq).combobox('enable');
+		}
+	}
 }
