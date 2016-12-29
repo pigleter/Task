@@ -42,6 +42,7 @@ function getParentRowIndex(obj){
 }
 
 function showButton(obj, showType){
+	//var btn_edit = $($('.datagrid-row')[rowIndex]).find('.easyui-linkbutton_edit');
 	var btn_edit = $($($($(obj).parents('.datagrid-row'))[0]).find('.easyui-linkbutton_edit'))[0];
 	var btn_save = $($($($(obj).parents('.datagrid-row'))[0]).find('.easyui-linkbutton_save'))[0];
 	var btn_undo = $($($($(obj).parents('.datagrid-row'))[0]).find('.easyui-linkbutton_undo'))[0];

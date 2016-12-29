@@ -89,11 +89,11 @@ function showScheduleData(){
 		        		}
 		        	}
 		        },
-		        {field:'interface_id',title:'接口名称',width:'20%',
+		        {field:'interface_id',title:'接口名称（参数）',width:'20%',
 		        	formatter:function(value){
 		                for(var i=0; i<interfaces.length; i++){
 		                    if (interfaces[i].id == value){
-		                    	return interfaces[i].interface_name;
+		                    	return interfaces[i].interface_name + "（" + interfaces[i].interface_param + "）";
 		                    }
 		                }
 		                return value;
@@ -102,7 +102,7 @@ function showScheduleData(){
 		        		type:'combobox',
 		        		options:{
 	                		valueField:'id',
-	                		textField:'interface_name',
+	                		textField:'name_param',
 	                		data:interfaces,
 	                		editable:false, 
 	                		required:true
@@ -254,6 +254,7 @@ function addSchedule(obj){
 	showButton(btn,'add');
 	renderButton();
 	disableButton(rowIndex, true);
+	$('#dg_schedule').datagrid('autoSizeColumn','opt');
 }
 
 function saveSchedule(obj){
@@ -861,6 +862,9 @@ function checkInput(){
 		}
 	}
 	if(dCount <= 20){
+		isCheck_D_count = true;
+	}
+	else if(cb_D_All.checked){
 		isCheck_D_count = true;
 	}
 	if(cb_D_Last.checked){

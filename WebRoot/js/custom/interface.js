@@ -41,6 +41,14 @@ function showInterfaceData(){
 	        		}
 	        	}
 	        },
+	        {field:'interface_param',title:'接口参数',width:'10%',
+	        	editor:{
+	        		type:'validatebox',
+	        		options:{
+	        			required:true
+	        		}
+	        	}
+	        },
 	        {field:'interface_desc',title:'接口描述',width:'20%',
 	        	editor:{
 	        		type:'validatebox',
@@ -49,7 +57,7 @@ function showInterfaceData(){
 	        		}
 	        	}
 	        },
-	        {field:'source_from',title:'数据来源',width:'10%',
+	        {field:'source_from',title:'数据来源',width:'8%',
 	        	formatter:function(value){
 	                for(var i=0; i<datasources.length; i++){
 	                    if (datasources[i].source_id == value) return datasources[i].source_name;
@@ -67,7 +75,7 @@ function showInterfaceData(){
                 	}
                 }
 	        },
-	        {field:'source_to',title:'数据目标',width:'10%',
+	        {field:'source_to',title:'数据目标',width:'8%',
 	        	formatter:function(value){
 	                for(var i=0; i<datasources.length; i++){
 	                    if (datasources[i].source_id == value) return datasources[i].source_name;
@@ -85,8 +93,8 @@ function showInterfaceData(){
                 	}
                 }
 	        },
-	        {field:'remark',title:'备注',width:'20%',editor:'text'},
-	        {field:'opt',title:'操作',width:'15%',
+	        {field:'remark',title:'备注',width:'15%',editor:'text'},
+	        {field:'opt',title:'操作',width:'14%',
 	        	formatter:function(value,row,index){
 	        		var btn='<a class="easyui-linkbutton_edit" onclick="editInterface(this);">编辑</a>  '
 					+'<a class="easyui-linkbutton_save" onclick="saveInterface(this);" style="display:none">保存</a>  '
@@ -116,10 +124,19 @@ function addInterface(){
 	renderButton();
 }
 
+
 function saveInterface(obj){
 	var rowIndex = getParentRowIndex(obj)
-	$('#dg_interface').datagrid('endEdit', rowIndex);
 	var row = $('#dg_interface').datagrid('getData').rows[rowIndex];
+	var oldRow_interface_name = row.interface_name;
+	var oldRow_interface_param = row.interface_param;
+	var oldRow_interface_desc = row.interface_desc;
+	var oldRow_source_from = row.source_from;
+	var oldRow_source_to = row.source_to;
+	var oldRow_remark = row.remark;
+	$('#dg_interface').datagrid('endEdit', rowIndex);
+	var btn = $($($($('#dg_interface').parents())[0]).find('.easyui-linkbutton_dele'))[rowIndex];
+	row = $('#dg_interface').datagrid('getData').rows[rowIndex];
 	if ($('#dg_interface').datagrid('validateRow', rowIndex)){
 		if(row.id==0){
 			$.post("/task/saveInterface",{"itf.interface_name":row.interface_name,"itf.interface_desc":row.interface_desc,"itf.source_from":row.source_from,"itf.source_to":row.source_to,"itf.remark":row.remark},function(data){
@@ -134,7 +151,7 @@ function saveInterface(obj){
 				}
 				else{
 					showMsg(data.msg);
-					editSchedule(obj);
+					editInterface(obj);
 				}
 				showButton(obj,'save');
 				renderButton();
@@ -142,16 +159,22 @@ function saveInterface(obj){
 		}
 		else{
 			$('#dg_interface').datagrid('updateRow',rowIndex);
-			$.post("/task/updateInterface",{"itf.id":row.id,"itf.interface_name":row.interface_name,"itf.interface_desc":row.interface_desc,"itf.source_from":row.source_from,"itf.source_to":row.source_to,"itf.remark":row.remark},function(data){
+			$.post("/task/updateInterface",{"itf.id":row.id,"itf.interface_name":row.interface_name,"itf.interface_param":row.interface_param,"itf.interface_desc":row.interface_desc,"itf.source_from":row.source_from,"itf.source_to":row.source_to,"itf.remark":row.remark},function(data){
 				if(data.result){
 					showMsg(data.msg);
+					showButton(btn,'save');
+					renderButton();
 				}
 				else{
 					showMsg(data.msg);
-					editSchedule(obj);
-				}
-				showButton(obj,'save');
-				renderButton();
+					editInterface(btn);
+					row.interface_name = oldRow_interface_name;
+					row.interface_param = oldRow_interface_param;
+					row.interface_desc = oldRow_interface_desc;
+					row.source_from = oldRow_source_from;
+					row.source_to = oldRow_source_to;
+					row.remark = oldRow_remark;					
+				}				
 		    });
 		}
 	}		
@@ -160,7 +183,7 @@ function saveInterface(obj){
 function editInterface(obj){
 	var rowIndex = getParentRowIndex(obj)
 	$('#dg_interface').datagrid('beginEdit', rowIndex);
-	showButton(obj,'edit');
+	showButton(obj, 'edit');
 	renderButton();
 }
 
@@ -199,7 +222,7 @@ function deleInterface(obj){
 	    height:150,
 	    modal:true,
 	    title:'删除确认',
-	    content:'确定删除？',
+	    content:'删除接口会同时删除该接口下所有作业调度，确定删除？',
 	    buttons:[
 	    	{
 	    		text:'确定',
