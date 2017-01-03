@@ -34,6 +34,9 @@ function renderButton(){
 		$(btn_undo).linkbutton({disabled:$(btn_swit[i]).prop('checked')});
 		$(btn_dele).linkbutton({disabled:$(btn_swit[i]).prop('checked')});
 	}
+	$('#dg_interface').datagrid('autoSizeColumn','opt');
+	$('#dg_schedule').datagrid('autoSizeColumn','opt');
+	$('#dg_schedule').datagrid('autoSizeColumn','status');
 }
 
 function getParentRowIndex(obj){
@@ -42,7 +45,6 @@ function getParentRowIndex(obj){
 }
 
 function showButton(obj, showType){
-	//var btn_edit = $($('.datagrid-row')[rowIndex]).find('.easyui-linkbutton_edit');
 	var btn_edit = $($($($(obj).parents('.datagrid-row'))[0]).find('.easyui-linkbutton_edit'))[0];
 	var btn_save = $($($($(obj).parents('.datagrid-row'))[0]).find('.easyui-linkbutton_save'))[0];
 	var btn_undo = $($($($(obj).parents('.datagrid-row'))[0]).find('.easyui-linkbutton_undo'))[0];
@@ -89,6 +91,9 @@ function showButton(obj, showType){
 		}
 		break;
 	};
+	$('#dg_interface').datagrid('autoSizeColumn','opt');
+	$('#dg_schedule').datagrid('autoSizeColumn','opt');
+	$('#dg_schedule').datagrid('autoSizeColumn','status');
 }
 
 function showMsg(msg){

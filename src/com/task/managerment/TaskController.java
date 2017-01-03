@@ -140,7 +140,7 @@ public class TaskController extends Controller {
 	
 	public int saveEvent(){
 		Event event = getModel(Event.class);
-		event.set("year", "-1");
+		event.set("year", "2000");
 		event.set("businessDays", "1");
 		try{
 			if(event.save()){
@@ -167,7 +167,7 @@ public class TaskController extends Controller {
 			event.set("year", "*");
 		}
 		else{
-			event.set("year", "-1");
+			event.set("year", "2000");
 		}		
 		event.set("task", itf.getStr("interface_name"));
 		event.set("extrainfo", itf.getStr("interface_param"));

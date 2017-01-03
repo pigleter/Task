@@ -43,10 +43,7 @@ function showInterfaceData(){
 	        },
 	        {field:'interface_param',title:'接口参数',width:'10%',
 	        	editor:{
-	        		type:'validatebox',
-	        		options:{
-	        			required:true
-	        		}
+	        		type:'validatebox'
 	        	}
 	        },
 	        {field:'interface_desc',title:'接口描述',width:'20%',
@@ -139,7 +136,7 @@ function saveInterface(obj){
 	row = $('#dg_interface').datagrid('getData').rows[rowIndex];
 	if ($('#dg_interface').datagrid('validateRow', rowIndex)){
 		if(row.id==0){
-			$.post("/task/saveInterface",{"itf.interface_name":row.interface_name,"itf.interface_desc":row.interface_desc,"itf.source_from":row.source_from,"itf.source_to":row.source_to,"itf.remark":row.remark},function(data){
+			$.post("/task/saveInterface",{"itf.interface_name":row.interface_name,"itf.interface_param":row.interface_param,"itf.interface_desc":row.interface_desc,"itf.source_from":row.source_from,"itf.source_to":row.source_to,"itf.remark":row.remark},function(data){
 				if(data.result){
 					$('#dg_interface').datagrid('updateRow',{
 						index: rowIndex,
