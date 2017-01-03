@@ -185,7 +185,7 @@
 							<tr>
 								<td style="width:150px">
 									<input type="radio" name="rb_HH" value="spec" onclick="checkAction(this, 'HH');" checked="checked"><span>指定</span>
-									<select id="cbx_HH_spec" class="easyui-combobox" style="width:60px" data-options="editable:false,multiple:true,onSelect:function(rec){sortSelection(this,rec);}">
+									<select id="cbx_HH_spec" class="easyui-combobox" style="width:60px" data-options="editable:false,multiple:true,onHidePanel:function(){sortSelection(this);}">
 										<option value ="0">0</option>
 										<option value ="1">1</option>
 										<option value ="2">2</option>
@@ -312,7 +312,7 @@
 							<tr>
 								<td style="width:150px">
 									<input type="radio" name="rb_MM" value="spec" onclick="checkAction(this, 'MM');" checked="checked"><span>指定</span>
-									<select id="cbx_MM_spec" class="easyui-combobox" style="width:60px" data-options="editable:false,multiple:true">
+									<select id="cbx_MM_spec" class="easyui-combobox" style="width:60px" data-options="editable:false,multiple:true,onHidePanel:function(){sortSelection(this);}">
 										<option value ="0">0</option>
 										<option value ="1">1</option>
 										<option value ="2">2</option>
@@ -583,7 +583,7 @@
 							<tr>
 								<td style="width:150px">
 									<input type="radio" name="rb_SS" value="spec" onclick="checkAction(this, 'SS');" checked="checked"><span>指定</span>
-									<select id="cbx_SS_spec" class="easyui-combobox" style="width:60px" data-options="editable:false,multiple:true">
+									<select id="cbx_SS_spec" class="easyui-combobox" style="width:60px" data-options="editable:false,multiple:true,onHidePanel:function(){sortSelection(this);}">
 										<option value ="0">0</option>
 										<option value ="1">1</option>
 										<option value ="2">2</option>

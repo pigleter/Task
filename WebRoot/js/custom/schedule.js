@@ -1101,15 +1101,30 @@ function sortSelection(obj,rec){
 	var vs = $(obj).combobox('getValues');
 	var min = 0;
 	var max = 60;
+	var tx = "";
 	for(var i=0; i<vs.length; i++){
-		if(rec.value > vs[i]){
-			min = i;
-		}
-		else{
-			max = i;
-			break;
-		}
+		vs[i] = parseInt(vs[i]);
 	}
-	vs.splice(min+1,0,rec.value);
-	$(obj).combobox('setValues',vs);
+//	vs.splice(min+1,0,rec.value);
+	bubbleSort(vs);
+	for(var i=0; i<vs.length; i++){
+		tx = tx + vs[i] + ",";
+	}
+	$(obj).combobox('setText',tx.substr(0,tx.length - 1));
+}
+
+function bubbleSort(arr) {
+    var i = arr.length, j;
+    var tempExchangVal;
+    while (i > 0) {
+        for (j = 0; j < i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                tempExchangVal = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = tempExchangVal;
+            }
+        }
+        i--;
+    }
+    return arr;
 }
