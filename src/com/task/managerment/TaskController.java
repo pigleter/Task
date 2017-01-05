@@ -292,8 +292,15 @@ public class TaskController extends Controller {
 		String W = "*";
 		String D = "*";
 		String HH = "*";
-		String MM = "*";
-		String SS = "3,15,27";
+		
+		String MM = "*/5";
+		String[] vs_MM;
+		int from_MM = 0;
+		int t_from_MM = 0;
+		int to_MM = 0;
+		int stepMM = 0;
+		
+		String SS = "*/2";
 		String[] vs_SS;
 		int from_SS = 0;
 		int t_from_SS = 0;
@@ -308,12 +315,23 @@ public class TaskController extends Controller {
 		if(SS.contains("*")){
 			if(SS.contains("/")){
 				vs_SS = SS.split("/");
+				cl.add(Calendar.SECOND, 1);
 				stepSS = Integer.parseInt(vs_SS[1]);
+				t_from_SS = 0;
+				while(cl.get(Calendar.SECOND) > t_from_SS){
+					t_from_SS = t_from_SS + stepSS;
+				}
+				if(t_from_SS > 59){
+					cl.add(Calendar.MINUTE, 1);
+					cl.set(Calendar.SECOND, from_SS);
+				}
+				else{
+					cl.set(Calendar.SECOND, t_from_SS);
+				}
 			}
-			else{
-				stepSS = 1;				
+			else{	
+				cl.add(Calendar.SECOND, 1);
 			}
-			cl.add(Calendar.SECOND, stepSS);
 		}
 		else if(SS.contains("-")){
 			if(SS.contains("/")){
@@ -375,6 +393,83 @@ public class TaskController extends Controller {
 				}
 			}
 		}
+		
+		if(MM.contains("*")){
+			if(MM.contains("/")){
+				vs_MM = MM.split("/");
+				stepMM = Integer.parseInt(vs_MM[1]);
+				t_from_MM = 0;
+				while(cl.get(Calendar.MINUTE) > t_from_MM){
+					t_from_MM = t_from_MM + stepMM;
+				}
+				if(t_from_MM > 59){
+					cl.add(Calendar.HOUR, 1);
+					cl.set(Calendar.MINUTE, from_MM);
+				}
+				else{
+					cl.set(Calendar.MINUTE, t_from_MM);
+				}
+			}
+		}
+		else if(MM.contains("-")){
+			if(MM.contains("/")){
+				vs_MM = MM.split("/");
+				stepMM = Integer.parseInt(vs_MM[1]);
+				vs_MM = vs_MM[0].split("-");
+				from_MM = Integer.parseInt(vs_MM[0]);
+				t_from_MM = from_MM;
+				to_MM = Integer.parseInt(vs_MM[1]);
+				if(cl.get(Calendar.MINUTE) < from_MM){
+					cl.set(Calendar.MINUTE, from_MM);
+				}
+				if(cl.get(Calendar.MINUTE) >= from_MM && cl.get(Calendar.MINUTE) <= to_MM){
+					t_from_MM = t_from_MM + stepMM;
+					while(cl.get(Calendar.MINUTE) > t_from_MM){
+						t_from_MM = t_from_MM + stepMM;
+					}
+					if(t_from_MM > to_MM){
+						cl.add(Calendar.HOUR, 1);
+						cl.set(Calendar.MINUTE, from_MM);
+					}
+					else{
+						cl.set(Calendar.MINUTE, t_from_MM);
+					}
+				}
+				if(cl.get(Calendar.SECOND) > to_MM){
+					cl.add(Calendar.HOUR, 1);
+					cl.set(Calendar.MINUTE, from_MM);
+				}
+			}
+			else{
+				vs_MM = MM.split("-");
+				from_MM = Integer.parseInt(vs_MM[0]);
+				to_MM = Integer.parseInt(vs_MM[1]);
+				if(cl.get(Calendar.MINUTE) < from_MM){
+					cl.set(Calendar.MINUTE, from_MM);
+				}
+				if(cl.get(Calendar.MINUTE) >= from_MM && cl.get(Calendar.MINUTE) <= to_MM){
+				}
+				if(cl.get(Calendar.MINUTE) > to_MM){
+					cl.add(Calendar.HOUR, 1);
+					cl.set(Calendar.MINUTE, from_MM);
+				}
+			}
+		}
+		else{
+			vs_MM = MM.split(",");
+			for(int i = 0; i < vs_MM.length; i++){
+				if(cl.get(Calendar.MINUTE) < Integer.parseInt(vs_MM[i])){
+					cl.set(Calendar.MINUTE, Integer.parseInt(vs_MM[i]));
+					break;
+				}
+				if(i == vs_MM.length - 1){
+					cl.add(Calendar.HOUR, 1);
+					cl.set(Calendar.MINUTE, Integer.parseInt(vs_MM[0]));
+				}
+			}
+		}
+		
+
 //		try{
 //			Thread.sleep(3000);
 //		}
