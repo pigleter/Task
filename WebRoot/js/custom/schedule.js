@@ -826,44 +826,59 @@ function checkInput(){
 	var isCheck_M = false;
 	var isCheck_W = false;
 	var isCheck_D = false;
-	var isCheck_D_count = false;
 	var isCheck_HH = false;
 	var isCheck_MM = false;
 	var isCheck_SS = false;
 	var isCheck = false;
+	var vs_HH;
+	var vs_MM;
+	var vs_SS;
 	var dCount;
-	for(var i=0; i<cbs_M.length; i++){
-		if(cbs_M[i].checked){
-			isCheck_M = true;
-			break;
+	
+	if(cb_M_All.checked){
+		isCheck_M = true;
+	}
+	else{
+		for(var i=0; i<cbs_M.length; i++){
+			if(cbs_M[i].checked){
+				isCheck_M = true;
+				break;
+			}
 		}
 	}
-	for(var i=0; i<cbs_W.length; i++){
-		if(cbs_W[i].checked){
-			isCheck_W = true;
-			break;
+	
+	if(cb_W_All.checked){
+		isCheck_W = true;
+	}
+	else{
+		for(var i=0; i<cbs_W.length; i++){
+			if(cbs_W[i].checked){
+				isCheck_W = true;
+				break;
+			}
 		}
 	}
-	dCount = 0;
-	for(var i=0; i<cbs_D.length; i++){
-		if(cbs_D[i].checked){
-			isCheck_D = true;
-			dCount = dCount + 1;
-		}
-	}
-	if(dCount <= 20){
-		isCheck_D_count = true;
-	}
-	else if(cb_D_All.checked){
-		isCheck_D_count = true;
-	}
-	if(cb_D_Last.checked){
+	
+	if(cb_D_All.checked || cb_D_Last.checked){
 		isCheck_D = true;
 	}
+	else{
+		dCount = 0;
+		for(var i=0; i<cbs_D.length; i++){
+			if(cbs_D[i].checked){
+				dCount = dCount + 1;
+			}
+		}
+		if(dCount > 0 && dCount <= 20){
+			isCheck_D = true;
+		}
+	}
+	
 	for(var i=0; i<rb_HH.length; i++){
 		if(rb_HH[i].checked){
 			if(rb_HH[i].value == "spec"){
-				if($(cbx_HH_spec).combobox('getText') != ""){
+				vs_HH = $(cbx_HH_spec).combobox('getValues');
+				if(vs_HH.length > 0 && vs_HH.length <= 20){
 					isCheck_HH = true;
 					break;
 				}
@@ -872,12 +887,14 @@ function checkInput(){
 				isCheck_HH = true;
 				break;
 			}
-		}
+		}		
 	}
+	
 	for(var i=0; i<rb_MM.length; i++){
 		if(rb_MM[i].checked){
 			if(rb_MM[i].value == "spec"){
-				if($(cbx_MM_spec).combobox('getText') != ""){
+				vs_MM = $(cbx_MM_spec).combobox('getValues');
+				if(vs_MM.length > 0 && vs_MM.length <= 20){
 					isCheck_MM = true;
 					break;
 				}
@@ -886,12 +903,14 @@ function checkInput(){
 				isCheck_MM = true;
 				break;
 			}
-		}
+		}		
 	}
+	
 	for(var i=0; i<rb_SS.length; i++){
 		if(rb_SS[i].checked){
 			if(rb_SS[i].value == "spec"){
-				if($(cbx_SS_spec).combobox('getText') != ""){
+				vs_SS = $(cbx_SS_spec).combobox('getValues');
+				if(vs_SS.length > 0 && vs_SS.length <= 20){
 					isCheck_SS = true;
 					break;
 				}
@@ -900,9 +919,10 @@ function checkInput(){
 				isCheck_SS = true;
 				break;
 			}
-		}
+		}		
 	}
-	if(isCheck_M && isCheck_W && isCheck_D && isCheck_D_count && isCheck_HH && isCheck_MM && isCheck_SS){
+	
+	if(isCheck_M && isCheck_W && isCheck_D && isCheck_HH && isCheck_MM && isCheck_SS){
 		isCheck = true;
 	}
 	else{
@@ -914,19 +934,16 @@ function checkInput(){
 			msg = msg + "请设置周天<br>";
 		}
 		if(!isCheck_D){
-			msg = msg + "请设置月天<br>";
-		}
-		if(!isCheck_D_count){
-			msg = msg + "月天必须小于20天<br>";
+			msg = msg + "月天至少选择1天且不超过20天或选择全部<br>";
 		}
 		if(!isCheck_HH){
-			msg = msg + "请设置小时<br>";
+			msg = msg + "指定小时请至少选择1个且不超过20个<br>";
 		}
 		if(!isCheck_MM){
-			msg = msg + "请设置分钟<br>";
+			msg = msg + "指定分钟请至少选择1个且不超过20个<br>";
 		}
 		if(!isCheck_SS){
-			msg = msg + "请设置秒钟<br>";
+			msg = msg + "指定秒钟请至少选择1个且不超过20个<br>";
 		}
 	}
 	return isCheck;
@@ -1099,18 +1116,16 @@ function initController(){
 
 function sortSelection(obj,rec){
 	var vs = $(obj).combobox('getValues');
-	var min = 0;
-	var max = 60;
 	var tx = "";
 	for(var i=0; i<vs.length; i++){
 		vs[i] = parseInt(vs[i]);
 	}
-//	vs.splice(min+1,0,rec.value);
 	bubbleSort(vs);
 	for(var i=0; i<vs.length; i++){
 		tx = tx + vs[i] + ",";
 	}
-	$(obj).combobox('setText',tx.substr(0,tx.length - 1));
+	tx = tx.substr(0,tx.length - 1);
+	$(obj).combobox('setText',tx);
 }
 
 function bubbleSort(arr) {

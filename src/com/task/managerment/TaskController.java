@@ -1,5 +1,6 @@
 package com.task.managerment;
 
+import java.util.Calendar;
 import java.util.List;
 
 import com.jfinal.core.Controller;
@@ -286,6 +287,103 @@ public class TaskController extends Controller {
 		}
 	}
 	
+	public void getPlanlist(){
+		String M = "*";
+		String W = "*";
+		String D = "*";
+		String HH = "*";
+		String MM = "*";
+		String SS = "3,15,27";
+		String[] vs_SS;
+		int from_SS = 0;
+		int t_from_SS = 0;
+		int to_SS = 0;
+		int stepSS = 0;
+		
+		Calendar cl = Calendar.getInstance();
+		System.out.println(cl.getTime());
+		//System.out.println(Calendar.SECOND);
+		//cl.set(Calendar.SECOND, 20);
+		//System.out.println(Calendar.SECOND);
+		if(SS.contains("*")){
+			if(SS.contains("/")){
+				vs_SS = SS.split("/");
+				stepSS = Integer.parseInt(vs_SS[1]);
+			}
+			else{
+				stepSS = 1;				
+			}
+			cl.add(Calendar.SECOND, stepSS);
+		}
+		else if(SS.contains("-")){
+			if(SS.contains("/")){
+				vs_SS = SS.split("/");
+				stepSS = Integer.parseInt(vs_SS[1]);
+				vs_SS = vs_SS[0].split("-");
+				from_SS = Integer.parseInt(vs_SS[0]);
+				t_from_SS = from_SS;
+				to_SS = Integer.parseInt(vs_SS[1]);
+				if(cl.get(Calendar.SECOND) < from_SS){
+					cl.set(Calendar.SECOND, from_SS);
+				}
+				if(cl.get(Calendar.SECOND) >= from_SS && cl.get(Calendar.SECOND) <= to_SS){
+					cl.add(Calendar.SECOND, 1);
+					t_from_SS = t_from_SS + stepSS;
+					while(cl.get(Calendar.SECOND) > t_from_SS){
+						t_from_SS = t_from_SS + stepSS;
+					}
+					if(t_from_SS > to_SS){
+						cl.add(Calendar.MINUTE, 1);
+						cl.set(Calendar.SECOND, from_SS);
+					}
+					else{
+						cl.set(Calendar.SECOND, t_from_SS);
+					}
+				}
+				if(cl.get(Calendar.SECOND) > to_SS){
+					cl.add(Calendar.MINUTE, 1);
+					cl.set(Calendar.SECOND, from_SS);
+				}
+			}
+			else{
+				vs_SS = SS.split("-");
+				from_SS = Integer.parseInt(vs_SS[0]);
+				to_SS = Integer.parseInt(vs_SS[1]);
+				if(cl.get(Calendar.SECOND) < from_SS){
+					cl.set(Calendar.SECOND, from_SS);
+				}
+				if(cl.get(Calendar.SECOND) >= from_SS && cl.get(Calendar.SECOND) <= to_SS){
+					cl.add(Calendar.SECOND, 1);
+				}
+				if(cl.get(Calendar.SECOND) > to_SS){
+					cl.add(Calendar.MINUTE, 1);
+					cl.set(Calendar.SECOND, from_SS);
+				}
+			}
+		}
+		else{
+			vs_SS = SS.split(",");
+			cl.add(Calendar.SECOND, 1);
+			for(int i = 0; i < vs_SS.length; i++){
+				if(cl.get(Calendar.SECOND) < Integer.parseInt(vs_SS[i])){
+					cl.set(Calendar.SECOND, Integer.parseInt(vs_SS[i]));
+					break;
+				}
+				if(i == vs_SS.length - 1){
+					cl.add(Calendar.MINUTE, 1);
+					cl.set(Calendar.SECOND, Integer.parseInt(vs_SS[0]));
+				}
+			}
+		}
+//		try{
+//			Thread.sleep(3000);
+//		}
+//		catch(Exception e){
+//			
+//		}
+		System.out.println(cl.getTime());
+	}
+	
 	public void getDatasources(){
 		List<Datasource> datasources = Datasource.dao.find("select * from z_datasource");
 		renderJson(datasources);
@@ -293,11 +391,6 @@ public class TaskController extends Controller {
 	
 	public void getInterfaces(){
 		List<Interface> interfaces = Interface.dao.find("select * from z_interface");
-		Interface itf;
-		for(int i = 0; i < interfaces.size(); i++){
-			itf = interfaces.get(i);
-			itf.put("name_param", itf.getStr("interface_name") + "（" + itf.getStr("interface_param") + "）");
-		}
 		renderJson(interfaces); 
 	}
 	
