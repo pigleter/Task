@@ -1,5 +1,6 @@
 var datasources;
 var interfaces;
+var schedules;
 
 function loadDatasources(){
 	$.post("/task/getDatasources",function(result){

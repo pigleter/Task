@@ -2,6 +2,7 @@ function showInterfacePage(){
 	$.post("/task/getDatasources",function(result){
 		datasources = result;
 		showInterfaceData();
+		initController();
     });
 }
 
@@ -31,7 +32,8 @@ function showInterfaceData(){
 			handler:function(){
 				}
 		}],
-	    columns:[[
+	    columns:[
+	    	[
 	        {field:'id',title:'ID',width:'5%'},
 	        {field:'interface_name',title:'接口名称',width:'20%',
 	        	editor:{
@@ -100,7 +102,8 @@ function showInterfaceData(){
 				return btn;
 				}
 	        }
-	    ]],
+	    ]
+	    ],
 	    onLoadSuccess:function(){
 	    	renderButton();
 	    },

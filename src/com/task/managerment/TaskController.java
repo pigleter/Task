@@ -1,5 +1,6 @@
 package com.task.managerment;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -288,195 +289,318 @@ public class TaskController extends Controller {
 	}
 	
 	public void getPlanlist(){
-		String M = "*";
-		String W = "*";
-		String D = "*";
-		String HH = "*";
-		
-		String MM = "*/5";
-		String[] vs_MM;
-		int from_MM = 0;
-		int t_from_MM = 0;
-		int to_MM = 0;
-		int stepMM = 0;
-		
-		String SS = "*/2";
-		String[] vs_SS;
-		int from_SS = 0;
-		int t_from_SS = 0;
-		int to_SS = 0;
-		int stepSS = 0;
-		
 		Calendar cl = Calendar.getInstance();
 		System.out.println(cl.getTime());
-		//System.out.println(Calendar.SECOND);
-		//cl.set(Calendar.SECOND, 20);
-		//System.out.println(Calendar.SECOND);
-		if(SS.contains("*")){
-			if(SS.contains("/")){
-				vs_SS = SS.split("/");
-				cl.add(Calendar.SECOND, 1);
-				stepSS = Integer.parseInt(vs_SS[1]);
-				t_from_SS = 0;
-				while(cl.get(Calendar.SECOND) > t_from_SS){
-					t_from_SS = t_from_SS + stepSS;
-				}
-				if(t_from_SS > 59){
-					cl.add(Calendar.MINUTE, 1);
-					cl.set(Calendar.SECOND, from_SS);
-				}
-				else{
-					cl.set(Calendar.SECOND, t_from_SS);
-				}
-			}
-			else{	
-				cl.add(Calendar.SECOND, 1);
-			}
-		}
-		else if(SS.contains("-")){
-			if(SS.contains("/")){
-				vs_SS = SS.split("/");
-				stepSS = Integer.parseInt(vs_SS[1]);
-				vs_SS = vs_SS[0].split("-");
-				from_SS = Integer.parseInt(vs_SS[0]);
-				t_from_SS = from_SS;
-				to_SS = Integer.parseInt(vs_SS[1]);
-				if(cl.get(Calendar.SECOND) < from_SS){
-					cl.set(Calendar.SECOND, from_SS);
-				}
-				if(cl.get(Calendar.SECOND) >= from_SS && cl.get(Calendar.SECOND) <= to_SS){
-					cl.add(Calendar.SECOND, 1);
-					t_from_SS = t_from_SS + stepSS;
-					while(cl.get(Calendar.SECOND) > t_from_SS){
-						t_from_SS = t_from_SS + stepSS;
-					}
-					if(t_from_SS > to_SS){
-						cl.add(Calendar.MINUTE, 1);
-						cl.set(Calendar.SECOND, from_SS);
-					}
-					else{
-						cl.set(Calendar.SECOND, t_from_SS);
-					}
-				}
-				if(cl.get(Calendar.SECOND) > to_SS){
-					cl.add(Calendar.MINUTE, 1);
-					cl.set(Calendar.SECOND, from_SS);
-				}
-			}
-			else{
-				vs_SS = SS.split("-");
-				from_SS = Integer.parseInt(vs_SS[0]);
-				to_SS = Integer.parseInt(vs_SS[1]);
-				if(cl.get(Calendar.SECOND) < from_SS){
-					cl.set(Calendar.SECOND, from_SS);
-				}
-				if(cl.get(Calendar.SECOND) >= from_SS && cl.get(Calendar.SECOND) <= to_SS){
-					cl.add(Calendar.SECOND, 1);
-				}
-				if(cl.get(Calendar.SECOND) > to_SS){
-					cl.add(Calendar.MINUTE, 1);
-					cl.set(Calendar.SECOND, from_SS);
-				}
-			}
-		}
-		else{
-			vs_SS = SS.split(",");
+		for(int i = 0; i < 8; i++){
+			getPlanListData(cl, "2", "*", "9", "*", "*", "5");
+			System.out.println(cl.getTime());
 			cl.add(Calendar.SECOND, 1);
-			for(int i = 0; i < vs_SS.length; i++){
-				if(cl.get(Calendar.SECOND) < Integer.parseInt(vs_SS[i])){
-					cl.set(Calendar.SECOND, Integer.parseInt(vs_SS[i]));
-					break;
-				}
-				if(i == vs_SS.length - 1){
-					cl.add(Calendar.MINUTE, 1);
-					cl.set(Calendar.SECOND, Integer.parseInt(vs_SS[0]));
-				}
-			}
 		}
+	}
+	
+	public int getLastDay(Calendar cl){
+		int lastDay = 0;
+		cl.set(Calendar.DATE, 1);
+		cl.add(Calendar.MONTH, 1);
+		cl.add(Calendar.DATE, -1);
+		lastDay = cl.get(Calendar.DATE);
+		return lastDay;
+	}
+	
+	public String getPlanListData(Calendar cl, String ctM, String ctW, String ctD, String ctHH, String ctMM, String ctSS){
 		
-		if(MM.contains("*")){
-			if(MM.contains("/")){
-				vs_MM = MM.split("/");
-				stepMM = Integer.parseInt(vs_MM[1]);
-				t_from_MM = 0;
-				while(cl.get(Calendar.MINUTE) > t_from_MM){
-					t_from_MM = t_from_MM + stepMM;
-				}
-				if(t_from_MM > 59){
-					cl.add(Calendar.HOUR, 1);
-					cl.set(Calendar.MINUTE, from_MM);
-				}
-				else{
-					cl.set(Calendar.MINUTE, t_from_MM);
-				}
-			}
-		}
-		else if(MM.contains("-")){
-			if(MM.contains("/")){
-				vs_MM = MM.split("/");
-				stepMM = Integer.parseInt(vs_MM[1]);
-				vs_MM = vs_MM[0].split("-");
-				from_MM = Integer.parseInt(vs_MM[0]);
-				t_from_MM = from_MM;
-				to_MM = Integer.parseInt(vs_MM[1]);
-				if(cl.get(Calendar.MINUTE) < from_MM){
-					cl.set(Calendar.MINUTE, from_MM);
-				}
-				if(cl.get(Calendar.MINUTE) >= from_MM && cl.get(Calendar.MINUTE) <= to_MM){
-					t_from_MM = t_from_MM + stepMM;
-					while(cl.get(Calendar.MINUTE) > t_from_MM){
-						t_from_MM = t_from_MM + stepMM;
-					}
-					if(t_from_MM > to_MM){
-						cl.add(Calendar.HOUR, 1);
-						cl.set(Calendar.MINUTE, from_MM);
-					}
-					else{
-						cl.set(Calendar.MINUTE, t_from_MM);
-					}
-				}
-				if(cl.get(Calendar.SECOND) > to_MM){
-					cl.add(Calendar.HOUR, 1);
-					cl.set(Calendar.MINUTE, from_MM);
-				}
-			}
-			else{
-				vs_MM = MM.split("-");
-				from_MM = Integer.parseInt(vs_MM[0]);
-				to_MM = Integer.parseInt(vs_MM[1]);
-				if(cl.get(Calendar.MINUTE) < from_MM){
-					cl.set(Calendar.MINUTE, from_MM);
-				}
-				if(cl.get(Calendar.MINUTE) >= from_MM && cl.get(Calendar.MINUTE) <= to_MM){
-				}
-				if(cl.get(Calendar.MINUTE) > to_MM){
-					cl.add(Calendar.HOUR, 1);
-					cl.set(Calendar.MINUTE, from_MM);
-				}
+		String result = "";
+
+		ArrayList<Integer> M = new ArrayList<Integer>();
+		ArrayList<Integer> W = new ArrayList<Integer>();
+		ArrayList<Integer> D = new ArrayList<Integer>();
+		ArrayList<Integer> HH = new ArrayList<Integer>();
+		ArrayList<Integer> MM = new ArrayList<Integer>();
+		ArrayList<Integer> SS = new ArrayList<Integer>();
+		
+		String[] vs_M;
+		String[] vs_W;
+		String[] vs_D;
+		String[] vs_HH;
+		String[] vs_MM;
+		String[] vs_SS;
+		
+		int newM = 0;
+		int newW = 0;
+		int newD = 0;
+		int newHH = 0;
+		int newMM = 0;
+		int newSS = 0;
+		
+		int oldY = 0;
+		int oldM = 0;
+		int oldD = 0;
+		int oldHH = 0;
+		int oldMM = 0;
+		
+		int repeatCount = 0;
+		
+		boolean isFoundDay = false;
+		boolean isFoundTime = false;
+		
+		int rangeFrom = 0;
+		int rangeTo = 0;
+		int rangePoint = 0;
+		int step = 0;
+		
+		oldY = cl.get(Calendar.YEAR);
+		oldM = cl.get(Calendar.MONTH);
+		oldD = cl.get(Calendar.DATE);
+		oldHH = cl.get(Calendar.HOUR_OF_DAY);
+		oldMM = cl.get(Calendar.MINUTE);
+		
+		if(ctM.contains("*")){
+			for(int i = 0; i < 12; i++){
+				M.add(i + 1);
 			}
 		}
 		else{
-			vs_MM = MM.split(",");
-			for(int i = 0; i < vs_MM.length; i++){
-				if(cl.get(Calendar.MINUTE) < Integer.parseInt(vs_MM[i])){
-					cl.set(Calendar.MINUTE, Integer.parseInt(vs_MM[i]));
-					break;
-				}
-				if(i == vs_MM.length - 1){
-					cl.add(Calendar.HOUR, 1);
-					cl.set(Calendar.MINUTE, Integer.parseInt(vs_MM[0]));
-				}
+			vs_M = ctM.split(",");
+			for(int i = 0; i < vs_M.length; i++){
+				M.add(Integer.parseInt(vs_M[i]));
 			}
 		}
 		
-
-//		try{
-//			Thread.sleep(3000);
-//		}
-//		catch(Exception e){
-//			
-//		}
-		System.out.println(cl.getTime());
+		if(ctW.contains("*")){
+			for(int i = 0; i < 7; i++){
+				W.add(i + 1);
+			}
+		}
+		else{
+			vs_W = ctW.split(",");
+			for(int i = 0; i < vs_W.length; i++){
+				W.add(Integer.parseInt(vs_W[i]));
+			}
+		}
+		
+		if(ctD.contains("*")){
+			for(int i = 0; i < 31; i++){
+				D.add(i + 1);
+			}
+		}
+		else{
+			vs_D = ctD.split(",");
+			for(int i = 0; i < vs_D.length; i++){
+				D.add(Integer.parseInt(vs_D[i]));
+			}
+		}
+		
+		rangeFrom = 0;
+		rangeTo = 0;
+		rangePoint = 0;
+		step = 0;
+		if(ctHH.contains("*")){
+			ctHH = ctHH.replace("*", "0-23");
+		}
+		if(ctHH.contains("-")){
+			if(ctHH.contains("/")){
+				rangeFrom = Integer.parseInt(ctHH.split("/")[0].split("-")[0]);
+				rangeTo = Integer.parseInt(ctHH.split("/")[0].split("-")[1]);
+				step = Integer.parseInt(ctHH.split("/")[1]);
+				rangePoint = rangeFrom;
+			}
+			else{
+				rangeFrom = Integer.parseInt(ctHH.split("-")[0]);
+				rangeTo = Integer.parseInt(ctHH.split("-")[1]);
+				step = 1;
+				rangePoint = rangeFrom;
+			}
+			while(rangePoint <= rangeTo){
+				HH.add(rangePoint);
+				rangePoint = rangePoint + step;
+			}
+		}
+		else{
+			vs_HH = ctHH.split(",");
+			for(int i = 0; i < vs_HH.length; i++){
+				HH.add(Integer.parseInt(vs_HH[i]));
+			}
+		}
+		
+		rangeFrom = 0;
+		rangeTo = 0;
+		rangePoint = 0;
+		step = 0;
+		if(ctMM.contains("*")){
+			ctMM = ctMM.replace("*", "0-59");
+		}
+		if(ctMM.contains("-")){
+			if(ctMM.contains("/")){
+				rangeFrom = Integer.parseInt(ctMM.split("/")[0].split("-")[0]);
+				rangeTo = Integer.parseInt(ctMM.split("/")[0].split("-")[1]);
+				step = Integer.parseInt(ctMM.split("/")[1]);
+				rangePoint = rangeFrom;
+			}
+			else{
+				rangeFrom = Integer.parseInt(ctMM.split("-")[0]);
+				rangeTo = Integer.parseInt(ctMM.split("-")[1]);
+				step = 1;
+				rangePoint = rangeFrom;
+			}
+			while(rangePoint <= rangeTo){
+				MM.add(rangePoint);
+				rangePoint = rangePoint + step;
+			}
+		}
+		else{
+			vs_MM = ctMM.split(",");
+			for(int i = 0; i < vs_MM.length; i++){
+				MM.add(Integer.parseInt(vs_MM[i]));
+			}
+		}
+		
+		rangeFrom = 0;
+		rangeTo = 0;
+		rangePoint = 0;
+		step = 0;
+		if(ctSS.contains("*")){
+			ctSS = ctSS.replace("*", "0-59");
+		}
+		if(ctSS.contains("-")){
+			if(ctSS.contains("/")){
+				rangeFrom = Integer.parseInt(ctSS.split("/")[0].split("-")[0]);
+				rangeTo = Integer.parseInt(ctSS.split("/")[0].split("-")[1]);
+				step = Integer.parseInt(ctSS.split("/")[1]);
+				rangePoint = rangeFrom;
+			}
+			else{
+				rangeFrom = Integer.parseInt(ctSS.split("-")[0]);
+				rangeTo = Integer.parseInt(ctSS.split("-")[1]);
+				step = 1;
+				rangePoint = rangeFrom;
+			}
+			while(rangePoint <= rangeTo){
+				SS.add(rangePoint);
+				rangePoint = rangePoint + step;
+			}
+		}
+		else{
+			vs_SS = ctSS.split(",");
+			for(int i = 0; i < vs_SS.length; i++){
+				SS.add(Integer.parseInt(vs_SS[i]));
+			}
+		}		
+				
+		isFoundDay = false;
+		while(!isFoundDay){
+			newM = cl.get(Calendar.MONTH) + 1;
+			for(int i = 0; i < M.size(); i++){
+				if(newM <= M.get(i)){
+					cl.set(Calendar.MONTH, M.get(i) - 1);
+					if(newM == M.get(i)){
+						newD = cl.get(Calendar.DATE);
+					}
+					else{
+						newD = 1;
+					}
+					cl.set(Calendar.DATE, newD);
+					for(int j = 0; j < D.size(); j++){
+						if(newD <= D.get(j)){
+							if(D.get(j) > getLastDay(cl)){
+								break;
+							}
+							cl.set(Calendar.DATE, D.get(j));
+							newW = cl.get(Calendar.DAY_OF_WEEK);
+							if(newW - 1 == 0){
+								newW = 7;
+							}
+							else{
+								newW = newW - 1;
+							}
+							for(int k = 0; k < W.size(); k++){
+								if(newW == W.get(k)){
+									isFoundDay = true;
+									break;
+								}
+							}
+						}
+						if(isFoundDay){
+							break;
+						}
+					}
+				}
+				if(isFoundDay){
+					break;
+				}
+			}
+			if(isFoundDay){
+				
+				if(oldY == cl.get(Calendar.YEAR) && oldM == cl.get(Calendar.MONTH) && oldD == cl.get(Calendar.DATE)){
+					
+				}
+				else{
+					cl.set(Calendar.HOUR_OF_DAY, 0);
+					cl.set(Calendar.MINUTE, 0);
+					cl.set(Calendar.SECOND, 0);
+				}		
+				
+				newHH = cl.get(Calendar.HOUR_OF_DAY);
+				for(int i = 0; i < HH.size(); i++){
+					if(newHH <= HH.get(i)){
+						cl.set(Calendar.HOUR_OF_DAY, HH.get(i));
+						if(cl.get(Calendar.HOUR_OF_DAY) != oldHH){
+							cl.set(Calendar.MINUTE, 0);
+							cl.set(Calendar.SECOND, 0);
+						}
+						
+						newMM = cl.get(Calendar.MINUTE);
+						for(int j = 0; j < MM.size(); j++){
+							if(newMM <= MM.get(j)){
+								cl.set(Calendar.MINUTE, MM.get(j));
+								if(cl.get(Calendar.MINUTE) != oldMM){
+									cl.set(Calendar.SECOND, 0);
+								}
+								
+								newSS = cl.get(Calendar.SECOND);
+								for(int k = 0; k < SS.size(); k++){
+									if(newSS <= SS.get(k)){
+										cl.set(Calendar.SECOND, SS.get(k));
+										result = cl.toString();
+										isFoundTime = true;
+										break;
+									}		
+								}
+								if(isFoundTime){
+									break;
+								}
+							}
+						}
+						if(isFoundTime){
+							break;
+						}
+					}
+				}			
+				
+			}
+			else{
+				cl.add(Calendar.YEAR, 1);
+				cl.set(Calendar.MONTH, 0);
+				cl.set(Calendar.DATE, 1);
+				repeatCount = repeatCount + 1;
+			}
+			
+			if(isFoundTime){
+				break;
+			}
+			else{
+				isFoundDay = false;
+				cl.add(Calendar.DATE, 1);
+				cl.set(Calendar.HOUR_OF_DAY, 0);
+				cl.set(Calendar.MINUTE, 0);
+				cl.set(Calendar.SECOND, 0);
+			}
+			
+			if(repeatCount > 100){
+				result = "100年内无符合日期时间！";
+				break;
+			}
+		}	
+		return result;
 	}
 	
 	public void getDatasources(){
@@ -491,6 +615,15 @@ public class TaskController extends Controller {
 	
 	public void getSchedules(){
 		List<Schedule> schedules = Schedule.dao.find("select * from z_schedule");
+		renderJson(schedules); 
+	}
+	
+	public void getSchedulesAll(){
+		List<Schedule> schedules = Schedule.dao.find("select * from z_schedule");
+		Schedule schedule = getModel(Schedule.class);
+		schedule.set("id", "0");
+		schedule.set("schedule_desc", "全部作业调度");
+		schedules.add(0, schedule);
 		renderJson(schedules); 
 	}
 	
