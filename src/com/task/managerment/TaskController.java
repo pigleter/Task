@@ -1,7 +1,9 @@
 package com.task.managerment;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import com.jfinal.core.Controller;
@@ -289,27 +291,65 @@ public class TaskController extends Controller {
 	}
 	
 	public void getPlanlist(){
+		
+		String id = getPara("id");
+		String times = getPara("times");
+		Schedule schd;
+		List<Schedule> schedules;
+		List<Schedule> result = Schedule.dao.find("select * from z_schedule where 1 = 2");
 		Calendar cl = Calendar.getInstance();
-		System.out.println(cl.getTime());
-		for(int i = 0; i < 8; i++){
-			getPlanListData(cl, "2", "*", "9", "*", "*", "5");
-			System.out.println(cl.getTime());
-			cl.add(Calendar.SECOND, 1);
+		Date dt = (Date)cl.getTime().clone();
+		String M = "";
+		String W = "";
+		String D = "";
+		String HH = "";
+		String MM = "";
+		String SS = "";
+		
+		if(id.equals("0")){
+			schedules = Schedule.dao.find("select * from z_schedule where status = 1 order by id desc");
 		}
+		else{
+			schedules = Schedule.dao.find("select * from z_schedule where status = 1 and id = " + id + "  order by id desc");
+		}
+		
+		for(int i = 0; i < schedules.size(); i++){
+			cl.setTime(dt);
+			for(int j = 0; j < Integer.parseInt(times); j++){
+				M = schedules.get(i).getStr("M");
+				W = schedules.get(i).getStr("W");
+				D = schedules.get(i).getStr("D");
+				HH = schedules.get(i).getStr("HH");
+				MM = schedules.get(i).getStr("MM");
+				SS = schedules.get(i).getStr("SS");
+				
+				schd = new Schedule()._setAttrs(schedules.get(i));
+				schd.put("order", j + 1);
+				schd.put("next_run", getPlanListData(cl, M, W, D, HH, MM, SS));
+				
+				result.add(j, schd);
+				
+				cl.add(Calendar.SECOND, 1);
+			}
+		}
+		renderJson(result);
 	}
 	
 	public int getLastDay(Calendar cl){
+		Calendar clLast = (Calendar)cl.clone();
 		int lastDay = 0;
-		cl.set(Calendar.DATE, 1);
-		cl.add(Calendar.MONTH, 1);
-		cl.add(Calendar.DATE, -1);
-		lastDay = cl.get(Calendar.DATE);
+		clLast.set(Calendar.DATE, 1);
+		clLast.add(Calendar.MONTH, 1);
+		clLast.add(Calendar.DATE, -1);
+		lastDay = clLast.get(Calendar.DATE);
 		return lastDay;
 	}
 	
 	public String getPlanListData(Calendar cl, String ctM, String ctW, String ctD, String ctHH, String ctMM, String ctSS){
 		
-		String result = "";
+		String result = "";		
+
+		SimpleDateFormat dateFormat = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss E");
 
 		ArrayList<Integer> M = new ArrayList<Integer>();
 		ArrayList<Integer> W = new ArrayList<Integer>();
@@ -354,6 +394,8 @@ public class TaskController extends Controller {
 		oldHH = cl.get(Calendar.HOUR_OF_DAY);
 		oldMM = cl.get(Calendar.MINUTE);
 		
+		boolean isLastDay = false;
+		
 		if(ctM.contains("*")){
 			for(int i = 0; i < 12; i++){
 				M.add(i + 1);
@@ -382,6 +424,13 @@ public class TaskController extends Controller {
 			for(int i = 0; i < 31; i++){
 				D.add(i + 1);
 			}
+		}
+		else if(ctD.contains("l")){
+			isLastDay = true;
+			D.add(28);
+			D.add(29);
+			D.add(30);
+			D.add(31);
 		}
 		else{
 			vs_D = ctD.split(",");
@@ -505,6 +554,11 @@ public class TaskController extends Controller {
 								break;
 							}
 							cl.set(Calendar.DATE, D.get(j));
+							if(isLastDay){
+								if(!checkLastDay(cl)){
+									continue;
+								}
+							}						
 							newW = cl.get(Calendar.DAY_OF_WEEK);
 							if(newW - 1 == 0){
 								newW = 7;
@@ -560,7 +614,7 @@ public class TaskController extends Controller {
 								for(int k = 0; k < SS.size(); k++){
 									if(newSS <= SS.get(k)){
 										cl.set(Calendar.SECOND, SS.get(k));
-										result = cl.toString();
+										result = dateFormat.format(cl.getTime()).toString();
 										isFoundTime = true;
 										break;
 									}		
@@ -596,11 +650,20 @@ public class TaskController extends Controller {
 			}
 			
 			if(repeatCount > 100){
-				result = "100年内无符合日期时间！";
+				result = "无符合日期时间！";
 				break;
 			}
 		}	
 		return result;
+	}
+	
+	public boolean checkLastDay(Calendar cl){
+		Calendar clLastDay = (Calendar)cl.clone();
+		int lastDay = getLastDay(clLastDay);
+		if(lastDay == clLastDay.get(Calendar.DATE)){
+			return true;
+		}
+		return false;
 	}
 	
 	public void getDatasources(){
@@ -619,7 +682,7 @@ public class TaskController extends Controller {
 	}
 	
 	public void getSchedulesAll(){
-		List<Schedule> schedules = Schedule.dao.find("select * from z_schedule");
+		List<Schedule> schedules = Schedule.dao.find("select * from z_schedule where status = 1");
 		Schedule schedule = getModel(Schedule.class);
 		schedule.set("id", "0");
 		schedule.set("schedule_desc", "全部作业调度");

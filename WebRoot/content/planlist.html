@@ -5,14 +5,14 @@
 	<table>
 		<tr>
 			<td>
-				<select id="cbx_schedule" class="easyui-combobox" style="width:200px" data-options="editable:false">
+				<select id="cbx_schedule" class="easyui-combobox" style="width:200px" data-options="editable:false,onHidePanel:function(){queryPlanlist();}">
 				</select>
 			</td>
 			<td>
 				<span>的最近</span>
 			</td>
 			<td>
-				<select id="cbx_time" class="easyui-combobox" style="width:45px" data-options="editable:false">
+				<select id="cbx_times" class="easyui-combobox" style="width:45px" data-options="editable:false,onHidePanel:function(){queryPlanlist();}">
 					<option value ="5">5</option>
 					<option value ="10">10</option>
 					<option value ="20">20</option>
