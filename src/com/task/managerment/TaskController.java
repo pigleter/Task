@@ -10,6 +10,7 @@ import com.jfinal.core.Controller;
 import com.task.managerment.model.Interface;
 import com.task.managerment.model.Datasource;
 import com.task.managerment.model.Schedule;
+import com.task.quartz.QuartzSchedule;
 import com.task.managerment.model.Event;
 
 public class TaskController extends Controller {
@@ -113,13 +114,58 @@ public class TaskController extends Controller {
 		}
 	}
 	
+	public boolean switchQuartzJob(String scheduleID, int status){
+		Schedule schedule = Schedule.dao.find("select * from z_schedule where id = " + scheduleID).get(0);
+		Interface itf = Interface.dao.find("select * from z_interface where id = " + Integer.toString(schedule.getInt("interface_id"))).get(0);
+		String jobName = itf.getStr("interface_name");
+		String param = itf.getStr("param");
+		String cronTab = schedule.getStr("SS")
+				+ " " + schedule.getStr("MM")
+				+ " " + schedule.getStr("HH")
+				+ " " + schedule.getStr("D")
+				+ " " + schedule.getStr("M")
+				+ " " + schedule.getStr("W");
+		String args[] = {param};
+		QuartzSchedule qs = new QuartzSchedule();
+		
+		if(status == 1){
+			try{				
+				if(qs.ScheduleStart(scheduleID, jobName, args, cronTab)){
+					return true;
+				}
+				else{
+					return true;
+				}
+			}
+			catch(Exception e){
+				return false;
+			}
+			
+		}
+		else{
+			try{
+				if(qs.ScheduleEnd(scheduleID)){
+					
+					return true;
+				}
+				else{
+					return false;
+				}
+			}
+			catch(Exception e){
+				return false;
+			}
+			
+		}
+	}
+	
 	public void switchSchedule(){
 		Schedule schedule = getModel(Schedule.class, "schd");
 		int status = schedule.getInt("status");
 		int schedule_id = schedule.getInt("id");
 		
 		try {			
-			if(updateEvents(schedule_id, status)){
+			if(updateEvents(schedule_id, status) && switchQuartzJob(Integer.toString(schedule_id), status)){
 				if(schedule.update()){
 					schedule.put("result", true);
 					schedule.put("msg", "启停成功！");
@@ -408,7 +454,7 @@ public class TaskController extends Controller {
 			}
 		}
 		
-		if(ctW.contains("*")){
+		if(ctW.contains("*") || ctW.contains("?")){
 			for(int i = 0; i < 7; i++){
 				W.add(i + 1);
 			}
@@ -420,12 +466,12 @@ public class TaskController extends Controller {
 			}
 		}
 		
-		if(ctD.contains("*")){
+		if(ctD.contains("*") || ctD.contains("?")){
 			for(int i = 0; i < 31; i++){
 				D.add(i + 1);
 			}
 		}
-		else if(ctD.contains("l")){
+		else if(ctD.contains("L")){
 			isLastDay = true;
 			D.add(28);
 			D.add(29);

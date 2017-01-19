@@ -367,7 +367,7 @@ function checkAction(obj, objType){
 		}
 		break;
 	case 'W':
-		if(checkBtn.value == "*"){
+		if(checkBtn.value == "?"){
 			for(var i=0; i<cbs_W.length; i++){
 				cbs_W[i].checked = cb_W_All.checked;
 			}
@@ -389,13 +389,13 @@ function checkAction(obj, objType){
 		}
 		break;
 	case 'D':
-		if(checkBtn.value == "*"){
+		if(checkBtn.value == "?"){
 			for(var i=0; i<cbs_D.length; i++){
 				cbs_D[i].checked = cb_D_All.checked;
 			}
 			cb_D_Last.checked = false;
 		}
-		else if(checkBtn.value == "l"){
+		else if(checkBtn.value == "L"){
 			if(checkBtn.checked){
 				for(var i=0; i<cbs_D.length; i++){
 					cbs_D[i].checked = false;
@@ -583,7 +583,7 @@ function setPanel(rowIndex, row){
 	}
 	if(row.W != null){
 		v_W = (row.W.split("/"))[0];		
-		if(v_W == "*"){
+		if(v_W == "*" || v_W == "?"){
 			for(var i=0; i<cbs_W.length; i++){
 				cbs_W[i].checked = true;
 			}
@@ -603,13 +603,13 @@ function setPanel(rowIndex, row){
 	}
 	if(row.D != null){
 		v_D = (row.D.split("/"))[0];
-		if(v_D == "*"){
+		if(v_D == "*" || v_D == "?"){
 			for(var i=0; i<cbs_D.length; i++){
 				cbs_D[i].checked = true;
 			}
 			cb_D_All.checked = true;
 		}
-		else if(v_D == "l"){
+		else if(v_D == "L"){
 			cb_D_Last.checked = true;
 		}
 		else{
@@ -829,11 +829,16 @@ function checkInput(){
 	var isCheck_HH = false;
 	var isCheck_MM = false;
 	var isCheck_SS = false;
+	var isCheck_W_D = false;
 	var isCheck = false;
 	var vs_HH;
 	var vs_MM;
 	var vs_SS;
 	var dCount;
+	
+	if(cb_W_All.checked || cb_D_All.checked){
+		isCheck_W_D = true;
+	}
 	
 	if(cb_M_All.checked){
 		isCheck_M = true;
@@ -922,7 +927,7 @@ function checkInput(){
 		}		
 	}
 	
-	if(isCheck_M && isCheck_W && isCheck_D && isCheck_HH && isCheck_MM && isCheck_SS){
+	if(isCheck_M && isCheck_W && isCheck_D && isCheck_HH && isCheck_MM && isCheck_SS && isCheck_W_D){
 		isCheck = true;
 	}
 	else{
@@ -935,6 +940,9 @@ function checkInput(){
 		}
 		if(!isCheck_D){
 			msg = msg + "月天至少选择1天且不超过20天或选择全部<br>";
+		}
+		if(!isCheck_W_D){
+			msg = msg + "月天和周天至少有一个全选<br>";
 		}
 		if(!isCheck_HH){
 			msg = msg + "指定小时请至少选择1个且不超过20个<br>";
@@ -983,7 +991,7 @@ function saveSchedulePlan(){
 	}
 	row.W = "";
 	if(cb_W_All.checked){		
-		row.W = "*";	
+		row.W = "?";	
 	}
 	else{
 		for(var i=0; i<cbs_W.length; i++){
@@ -995,10 +1003,10 @@ function saveSchedulePlan(){
 	}
 	row.D = "";
 	if(cb_D_All.checked){		
-		row.D = "*";		
+		row.D = "?";		
 	}
 	else if(cb_D_Last.checked){
-		row.D = "l";	
+		row.D = "L";	
 	}
 	else{
 		for(var i=0; i<cbs_D.length; i++){
@@ -1060,6 +1068,10 @@ function saveSchedulePlan(){
 		row.SS = row.SS + "/" + $(cbx_SS_freq).combobox('getValue');
 	}
 	row.status = 0;
+	
+	if(row.W == "?" && row.D == "?"){
+		row.D = "*"
+	}
 	
 	$.post("/task/updateSchedule",{"schd.id":row.id,"schd.M":row.M,"schd.W":row.W,"schd.D":row.D,"schd.HH":row.HH,"schd.MM":row.MM,"schd.SS":row.SS,"schd.status":row.status},function(data){
 		if(data.result){
