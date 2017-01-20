@@ -1,2 +1,5 @@
 /build/
 /.DS_Store
+/ECT.jcoDestination
+/dev_jco_rfc.trc
+*.trc

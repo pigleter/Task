@@ -26,19 +26,13 @@ public class QuartzSchedule {
         return scheduler;
     }  
 	
-	public boolean ScheduleStart(String scheduleID, String jobName, String[] args, String cronTab){
+	public boolean ScheduleStart(String scheduleID, String jobName, String param, String cronTab) throws Exception {
 		
 		try{
 			JobDetail job = JobBuilder.newJob(QuartzJob.class).withIdentity(scheduleID, "jobgroup").build();
 
 			job.getJobDataMap().put("jobName", jobName);
-			
-			if(args.length > 0){
-				for(int i = 0; i < args.length; i++)
-				{
-					job.getJobDataMap().put("args_" + String.valueOf(i), args[i]);
-				}	
-			}					
+			job.getJobDataMap().put("param", param);
 
 			Trigger trigger = TriggerBuilder.newTrigger().withIdentity(scheduleID, "triggerGroup")  
               .withSchedule(CronScheduleBuilder.cronSchedule(cronTab))  
@@ -46,23 +40,22 @@ public class QuartzSchedule {
 
 			scheduler.scheduleJob(job, trigger);
 			
-			scheduler.start();
-			
-			return true;
+			scheduler.start();	
 			
 		}
 		catch(Exception e){
-			return false;
+			throw e;
 		}
+		return true;
 	}
 	
-	public boolean ScheduleEnd(String scheduleID){
+	public boolean ScheduleEnd(String scheduleID) throws Exception{
 		
 		try{
 			scheduler.deleteJob(JobKey.jobKey(scheduleID, "jobgroup"));
 		}
 		catch(Exception e){
-			
+			throw e;
 		}
 		return true;
 	}

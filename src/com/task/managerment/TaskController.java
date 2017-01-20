@@ -11,7 +11,6 @@ import com.task.managerment.model.Interface;
 import com.task.managerment.model.Datasource;
 import com.task.managerment.model.Schedule;
 import com.task.quartz.QuartzSchedule;
-import com.task.managerment.model.Event;
 
 public class TaskController extends Controller {
 	public void index(){
@@ -90,7 +89,7 @@ public class TaskController extends Controller {
 		
 		try {	
 			for(int i = 0; i < schedules.size(); i++){
-				if(!deleteEventByScheduleId(schedules.get(i).getInt("id")) || !deleteScheduleById(schedules.get(i).getInt("id"))){
+				if(!deleteScheduleById(schedules.get(i).getInt("id"))){
 					itf.put("result", false);
 					itf.put("msg", "删除失败！");
 					renderJson(itf);
@@ -114,49 +113,31 @@ public class TaskController extends Controller {
 		}
 	}
 	
-	public boolean switchQuartzJob(String scheduleID, int status){
+	public boolean switchQuartzJob(String scheduleID, int status) throws Exception{
 		Schedule schedule = Schedule.dao.find("select * from z_schedule where id = " + scheduleID).get(0);
 		Interface itf = Interface.dao.find("select * from z_interface where id = " + Integer.toString(schedule.getInt("interface_id"))).get(0);
 		String jobName = itf.getStr("interface_name");
-		String param = itf.getStr("param");
+		String param = itf.getStr("interface_param");
 		String cronTab = schedule.getStr("SS")
 				+ " " + schedule.getStr("MM")
 				+ " " + schedule.getStr("HH")
 				+ " " + schedule.getStr("D")
 				+ " " + schedule.getStr("M")
 				+ " " + schedule.getStr("W");
-		String args[] = {param};
 		QuartzSchedule qs = new QuartzSchedule();
 		
-		if(status == 1){
-			try{				
-				if(qs.ScheduleStart(scheduleID, jobName, args, cronTab)){
-					return true;
-				}
-				else{
-					return true;
-				}
+		try{
+			if(status == 1){
+				qs.ScheduleStart(scheduleID, jobName, param, cronTab);
 			}
-			catch(Exception e){
-				return false;
+			else{
+				qs.ScheduleEnd(scheduleID);
 			}
-			
 		}
-		else{
-			try{
-				if(qs.ScheduleEnd(scheduleID)){
-					
-					return true;
-				}
-				else{
-					return false;
-				}
-			}
-			catch(Exception e){
-				return false;
-			}
-			
+		catch(Exception e){
+			throw e;
 		}
+		return true;
 	}
 	
 	public void switchSchedule(){
@@ -165,7 +146,7 @@ public class TaskController extends Controller {
 		int schedule_id = schedule.getInt("id");
 		
 		try {			
-			if(updateEvents(schedule_id, status) && switchQuartzJob(Integer.toString(schedule_id), status)){
+			if(switchQuartzJob(Integer.toString(schedule_id), status)){
 				if(schedule.update()){
 					schedule.put("result", true);
 					schedule.put("msg", "启停成功！");
@@ -188,72 +169,17 @@ public class TaskController extends Controller {
 		}
 	}
 	
-	public int saveEvent(){
-		Event event = getModel(Event.class);
-		event.set("year", "2000");
-		event.set("businessDays", "1");
-		try{
-			if(event.save()){
-				return event.getInt("id");
-			}
-		}
-		catch(Exception e){
-			return 0;
-		}
-		return 0;
-	}
-	
-	public boolean updateEvents(int schedule_id, int status){
-		Event event = getModel(Event.class);
-		Schedule schedule = Schedule.dao.find("select * from z_schedule where id = " + Integer.toString(schedule_id)).get(0);
-		Interface itf = Interface.dao.find("select * from z_interface where id = " + Integer.toString(schedule.getInt("interface_id"))).get(0);
-		event.set("second", schedule.getStr("SS"));
-		event.set("minute", schedule.getStr("MM"));
-		event.set("hour", schedule.getStr("HH"));
-		event.set("dayofmonth", schedule.getStr("D"));
-		event.set("month", schedule.getStr("M"));
-		event.set("dayofweek", schedule.getStr("W"));
-		if(status == 1){
-			event.set("year", "*");
-		}
-		else{
-			event.set("year", "2000");
-		}		
-		event.set("task", itf.getStr("interface_name"));
-		event.set("extrainfo", itf.getStr("interface_param"));
-		event.set("businessDays", "1");
-		event.set("id", schedule.getInt("event_id"));
-		try{
-			if(event.update()){
-				return true;
-			}
-		}
-		catch(Exception e){
-			return false;
-		}
-		return false;
-	}
-	
 	public void saveSchedule(){
 		Schedule schedule = getModel(Schedule.class, "schd");
-		int event_id = 0;
-		try {			
-			event_id = saveEvent();
-			if(event_id > 0){
-				schedule.set("event_id", event_id);
-				if(schedule.save()){					
-					schedule.put("result", true);
-					schedule.put("msg", "保存成功！");
-				}
-				else{
-					schedule.put("result", false);
-					schedule.put("msg", "保存失败！");
-				}
+		try {
+			if(schedule.save()){					
+				schedule.put("result", true);
+				schedule.put("msg", "保存成功！");
 			}
 			else{
 				schedule.put("result", false);
 				schedule.put("msg", "保存失败！");
-			}			
+			}		
 			renderJson(schedule);
 		}
 		catch(Exception e){
@@ -261,20 +187,6 @@ public class TaskController extends Controller {
 			schedule.put("msg", "保存失败！发生异常：" + e.getMessage());
 			renderJson(schedule);
 		}
-	}
-	
-	public boolean deleteEventByScheduleId(int schedule_id){
-		Event event = getModel(Event.class);
-		Schedule schedule = Schedule.dao.find("select * from z_schedule where id = " + Integer.toString(schedule_id)).get(0);
-		try{
-			if(event.deleteById(schedule.getInt("event_id"))){
-				return true;
-			}
-		}
-		catch(Exception e){
-			return false;
-		}
-		return false;
 	}
 	
 	public void updateSchedule(){
@@ -300,8 +212,11 @@ public class TaskController extends Controller {
 	public boolean deleteScheduleById(int schedule_id){
 		Schedule schedule = getModel(Schedule.class);
 		try{
-			if(schedule.deleteById(schedule_id)){
-				return true;
+			if(switchQuartzJob(Integer.toString(schedule_id), 0))
+			{
+				if(schedule.deleteById(schedule_id)){
+					return true;
+				}
 			}
 		}
 		catch(Exception e){
@@ -312,9 +227,11 @@ public class TaskController extends Controller {
 	
 	public void deleteSchedule(){
 		Schedule schedule = getModel(Schedule.class, "schd");
+		int schedule_id = schedule.getInt("id");
 		try {
-			if(deleteEventByScheduleId(schedule.getInt("id"))){
-				if(schedule.deleteById(schedule.getInt("id"))){
+			if(switchQuartzJob(Integer.toString(schedule_id), 0))
+			{
+				if(schedule.deleteById(schedule_id)){
 					schedule.put("result", true);
 					schedule.put("msg", "删除成功！");
 				}
@@ -322,7 +239,7 @@ public class TaskController extends Controller {
 					schedule.put("result", false);
 					schedule.put("msg", "删除失败！");
 				}
-			}
+			}			
 			else{
 				schedule.put("result", false);
 				schedule.put("msg", "删除失败！");
@@ -735,10 +652,4 @@ public class TaskController extends Controller {
 		schedules.add(0, schedule);
 		renderJson(schedules); 
 	}
-	
-	public void getEvents(){
-		List<Event> events = Event.dao.find("select * from events");
-		renderJson(events); 
-	}
-
 }

@@ -834,7 +834,6 @@ function checkInput(){
 	var vs_HH;
 	var vs_MM;
 	var vs_SS;
-	var dCount;
 	
 	if(cb_W_All.checked || cb_D_All.checked){
 		isCheck_W_D = true;
@@ -868,14 +867,11 @@ function checkInput(){
 		isCheck_D = true;
 	}
 	else{
-		dCount = 0;
 		for(var i=0; i<cbs_D.length; i++){
 			if(cbs_D[i].checked){
-				dCount = dCount + 1;
+				isCheck_D = true;
+				break;
 			}
-		}
-		if(dCount > 0 && dCount <= 20){
-			isCheck_D = true;
 		}
 	}
 	
@@ -883,7 +879,7 @@ function checkInput(){
 		if(rb_HH[i].checked){
 			if(rb_HH[i].value == "spec"){
 				vs_HH = $(cbx_HH_spec).combobox('getValues');
-				if(vs_HH.length > 0 && vs_HH.length <= 20){
+				if(vs_HH.length > 0){
 					isCheck_HH = true;
 					break;
 				}
@@ -899,7 +895,7 @@ function checkInput(){
 		if(rb_MM[i].checked){
 			if(rb_MM[i].value == "spec"){
 				vs_MM = $(cbx_MM_spec).combobox('getValues');
-				if(vs_MM.length > 0 && vs_MM.length <= 20){
+				if(vs_MM.length > 0){
 					isCheck_MM = true;
 					break;
 				}
@@ -915,7 +911,7 @@ function checkInput(){
 		if(rb_SS[i].checked){
 			if(rb_SS[i].value == "spec"){
 				vs_SS = $(cbx_SS_spec).combobox('getValues');
-				if(vs_SS.length > 0 && vs_SS.length <= 20){
+				if(vs_SS.length > 0){
 					isCheck_SS = true;
 					break;
 				}
@@ -939,19 +935,19 @@ function checkInput(){
 			msg = msg + "请设置周天<br>";
 		}
 		if(!isCheck_D){
-			msg = msg + "月天至少选择1天且不超过20天或选择全部<br>";
+			msg = msg + "请设置月天<br>";
 		}
 		if(!isCheck_W_D){
 			msg = msg + "月天和周天至少有一个全选<br>";
 		}
 		if(!isCheck_HH){
-			msg = msg + "指定小时请至少选择1个且不超过20个<br>";
+			msg = msg + "指定小时请至少选择1个选项<br>";
 		}
 		if(!isCheck_MM){
-			msg = msg + "指定分钟请至少选择1个且不超过20个<br>";
+			msg = msg + "指定分钟请至少选择1个选项<br>";
 		}
 		if(!isCheck_SS){
-			msg = msg + "指定秒钟请至少选择1个且不超过20个<br>";
+			msg = msg + "指定秒钟请至少选择1个选项<br>";
 		}
 	}
 	return isCheck;
