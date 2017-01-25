@@ -1,5 +1,5 @@
 package com.task.quartz;
-
+ 
 import org.quartz.CronScheduleBuilder;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
@@ -9,16 +9,18 @@ import org.quartz.SchedulerFactory;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
+import org.apache.log4j.Logger;  
 
 public class QuartzSchedule {
 	
 	private static Scheduler scheduler = getScheduler();
+	private static Logger logger = Logger.getLogger(QuartzSchedule.class);
 	
 	private static Scheduler getScheduler(){
 		SchedulerFactory sf = new StdSchedulerFactory();  
         Scheduler scheduler=null;  
         try {
-        	scheduler = sf.getScheduler();  
+        	scheduler = sf.getScheduler();
         }
         catch(Exception e){
         	
@@ -40,11 +42,14 @@ public class QuartzSchedule {
 
 			scheduler.scheduleJob(job, trigger);
 			
-			scheduler.start();	
+			scheduler.start();
+			
+			logger.info("作业调度成功！");
 			
 		}
 		catch(Exception e){
-			throw e;
+			logger.error("作业调度失败！" + e.getMessage());
+			throw e;			
 		}
 		return true;
 	}
@@ -53,8 +58,10 @@ public class QuartzSchedule {
 		
 		try{
 			scheduler.deleteJob(JobKey.jobKey(scheduleID, "jobgroup"));
+			logger.info("作业停止调度成功！");
 		}
 		catch(Exception e){
+			logger.error("作业停止调度异常！" + e.getMessage());
 			throw e;
 		}
 		return true;
