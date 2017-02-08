@@ -367,7 +367,7 @@ function checkAction(obj, objType){
 		}
 		break;
 	case 'W':
-		if(checkBtn.value == "?"){
+		if(checkBtn.value == "*"){
 			for(var i=0; i<cbs_W.length; i++){
 				cbs_W[i].checked = cb_W_All.checked;
 			}
@@ -389,7 +389,7 @@ function checkAction(obj, objType){
 		}
 		break;
 	case 'D':
-		if(checkBtn.value == "?"){
+		if(checkBtn.value == "*"){
 			for(var i=0; i<cbs_D.length; i++){
 				cbs_D[i].checked = cb_D_All.checked;
 			}
@@ -583,7 +583,7 @@ function setPanel(rowIndex, row){
 	}
 	if(row.W != null){
 		v_W = (row.W.split("/"))[0];		
-		if(v_W == "*" || v_W == "?"){
+		if(v_W == "*"){
 			for(var i=0; i<cbs_W.length; i++){
 				cbs_W[i].checked = true;
 			}
@@ -603,7 +603,7 @@ function setPanel(rowIndex, row){
 	}
 	if(row.D != null){
 		v_D = (row.D.split("/"))[0];
-		if(v_D == "*" || v_D == "?"){
+		if(v_D == "*"){
 			for(var i=0; i<cbs_D.length; i++){
 				cbs_D[i].checked = true;
 			}
@@ -987,7 +987,7 @@ function saveSchedulePlan(){
 	}
 	row.W = "";
 	if(cb_W_All.checked){		
-		row.W = "?";	
+		row.W = "*";	
 	}
 	else{
 		for(var i=0; i<cbs_W.length; i++){
@@ -999,7 +999,7 @@ function saveSchedulePlan(){
 	}
 	row.D = "";
 	if(cb_D_All.checked){		
-		row.D = "?";		
+		row.D = "*";		
 	}
 	else if(cb_D_Last.checked){
 		row.D = "L";	
@@ -1064,10 +1064,6 @@ function saveSchedulePlan(){
 		row.SS = row.SS + "/" + $(cbx_SS_freq).combobox('getValue');
 	}
 	row.status = 0;
-	
-	if(row.W == "?" && row.D == "?"){
-		row.D = "*"
-	}
 	
 	$.post("/task/updateSchedule",{"schd.id":row.id,"schd.M":row.M,"schd.W":row.W,"schd.D":row.D,"schd.HH":row.HH,"schd.MM":row.MM,"schd.SS":row.SS,"schd.status":row.status},function(data){
 		if(data.result){

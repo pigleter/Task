@@ -118,12 +118,28 @@ public class TaskController extends Controller {
 		Interface itf = Interface.dao.find("select * from z_interface where id = " + Integer.toString(schedule.getInt("interface_id"))).get(0);
 		String jobName = itf.getStr("interface_name");
 		String param = itf.getStr("interface_param");
-		String cronTab = schedule.getStr("SS")
-				+ " " + schedule.getStr("MM")
-				+ " " + schedule.getStr("HH")
-				+ " " + schedule.getStr("D")
-				+ " " + schedule.getStr("M")
-				+ " " + schedule.getStr("W");
+		String M = schedule.getStr("M");
+		String D = schedule.getStr("D");		
+		String W = schedule.getStr("W");
+		String HH = schedule.getStr("HH");
+		String MM = schedule.getStr("MM");
+		String SS = schedule.getStr("SS");
+		if(W.equals("*")){
+			W = "?";
+		}
+		else{
+			W = Integer.toString(Integer.parseInt(W) + 1);
+			if(W.equals("8")){
+				W = "1";
+			}
+			D = "?";
+		}
+		String cronTab = SS
+				+ " " + MM
+				+ " " + HH
+				+ " " + D
+				+ " " + M
+				+ " " + W;
 		QuartzSchedule qs = new QuartzSchedule();
 		
 		try{
