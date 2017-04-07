@@ -1,5 +1,5 @@
 function showInterfacePage(){
-	$.post("/task/getDatasources",function(result){
+	$.post("getDatasources",function(result){
 		datasources = result;
 		showInterfaceData();
 		initController();
@@ -9,7 +9,7 @@ function showInterfacePage(){
 function showInterfaceData(){
 	$('#dg_interface').datagrid({
 	    title:"接口列表",
-	    url:"/task/getInterfaces",
+	    url:"getInterfaces",
 	    fitColumns:'true',
 	    fit:'true',
 	    idField:'id',
@@ -34,8 +34,16 @@ function showInterfaceData(){
 		}],
 	    columns:[
 	    	[
-	        {field:'id',title:'ID',width:'5%'},
+	        {field:'id',title:'ID',width:'3%'},
 	        {field:'interface_name',title:'接口名称',width:'20%',
+	        	editor:{
+	        		type:'validatebox',
+	        		options:{
+	        			required:true
+	        		}
+	        	}
+	        },
+	        {field:'interface_path',title:'接口路径',width:'10%',
 	        	editor:{
 	        		type:'validatebox',
 	        		options:{
@@ -92,8 +100,8 @@ function showInterfaceData(){
                 	}
                 }
 	        },
-	        {field:'remark',title:'备注',width:'15%',editor:'text'},
-	        {field:'opt',title:'操作',width:'14%',
+	        {field:'remark',title:'备注',width:'12%',editor:'text'},
+	        {field:'opt',title:'操作',width:'12%',
 	        	formatter:function(value,row,index){
 	        		var btn='<a class="easyui-linkbutton_edit" onclick="editInterface(this);">编辑</a>  '
 					+'<a class="easyui-linkbutton_save" onclick="saveInterface(this);" style="display:none">保存</a>  '
@@ -139,7 +147,7 @@ function saveInterface(obj){
 	row = $('#dg_interface').datagrid('getData').rows[rowIndex];
 	if ($('#dg_interface').datagrid('validateRow', rowIndex)){
 		if(row.id==0){
-			$.post("/task/saveInterface",{"itf.interface_name":row.interface_name,"itf.interface_param":row.interface_param,"itf.interface_desc":row.interface_desc,"itf.source_from":row.source_from,"itf.source_to":row.source_to,"itf.remark":row.remark},function(data){
+			$.post("saveInterface",{"itf.interface_name":row.interface_name,"itf.interface_path":row.interface_path,"itf.interface_param":row.interface_param,"itf.interface_desc":row.interface_desc,"itf.source_from":row.source_from,"itf.source_to":row.source_to,"itf.remark":row.remark},function(data){
 				if(data.result){
 					$('#dg_interface').datagrid('updateRow',{
 						index: rowIndex,
@@ -159,7 +167,7 @@ function saveInterface(obj){
 		}
 		else{
 			$('#dg_interface').datagrid('updateRow',rowIndex);
-			$.post("/task/updateInterface",{"itf.id":row.id,"itf.interface_name":row.interface_name,"itf.interface_param":row.interface_param,"itf.interface_desc":row.interface_desc,"itf.source_from":row.source_from,"itf.source_to":row.source_to,"itf.remark":row.remark},function(data){
+			$.post("updateInterface",{"itf.id":row.id,"itf.interface_name":row.interface_name,"itf.interface_path":row.interface_path,"itf.interface_param":row.interface_param,"itf.interface_desc":row.interface_desc,"itf.source_from":row.source_from,"itf.source_to":row.source_to,"itf.remark":row.remark},function(data){
 				if(data.result){
 					showMsg(data.msg);
 					showButton(btn,'save');
@@ -232,7 +240,7 @@ function deleInterface(obj){
 					var row = $('#dg_interface').datagrid('getData').rows[rowIndex];
 					$('#dd').dialog('close');
 					if(row.id != 0){
-						$.post("/task/deleteInterface",{"itf.id":row.id},function(data){
+						$.post("deleteInterface",{"itf.id":row.id},function(data){
 							if(data.result){
 								showMsg(data.msg);
 								$('#dg_interface').datagrid('deleteRow', rowIndex);

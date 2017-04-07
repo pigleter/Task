@@ -32,7 +32,7 @@ var msg;
 
 
 function showSchedulePage(){
-	$.post("/task/getInterfaces",function(result){
+	$.post("getInterfaces",function(result){
 		interfaces = result;
 		showScheduleData();
     	initController();
@@ -42,7 +42,7 @@ function showSchedulePage(){
 function showScheduleData(){
 	$('#dg_schedule').datagrid({
 		title:"调度列表",
-	    url:"/task/getSchedules",
+	    url:"getSchedules",
 	    fitColumns:'true',
 	    fit:'true',
 	    idField:'id',
@@ -218,7 +218,7 @@ function deleSchedule(obj){
 					var row = $('#dg_schedule').datagrid('getData').rows[rowIndex];
 					$('#dd').dialog('close');
 					if(row.id != 0){
-						$.post("/task/deleteSchedule",{"schd.id":row.id},function(data){
+						$.post("deleteSchedule",{"schd.id":row.id},function(data){
 							if(data.result){
 								showMsg(data.msg);
 								$('#dg_schedule').datagrid('deleteRow', rowIndex);
@@ -263,7 +263,7 @@ function saveSchedule(obj){
 	var row = $('#dg_schedule').datagrid('getData').rows[rowIndex];
 	if ($('#dg_schedule').datagrid('validateRow', rowIndex)){
 		if(row.id==0){
-			$.post("/task/saveSchedule",{"schd.schedule_desc":row.schedule_desc,"schd.interface_id":row.interface_id,"event_id":0,"schd.status":-1},function(data){
+			$.post("saveSchedule",{"schd.schedule_desc":row.schedule_desc,"schd.interface_id":row.interface_id,"event_id":0,"schd.status":-1},function(data){
 				if(data.result){
 					$('#dg_schedule').datagrid('updateRow',{
 						index: rowIndex,
@@ -283,7 +283,7 @@ function saveSchedule(obj){
 		}
 		else{
 			$('#dg_schedule').datagrid('updateRow',rowIndex);
-			$.post("/task/updateSchedule",{"schd.id":row.id,"schd.schedule_desc":row.schedule_desc,"schd.interface_id":row.interface_id},function(data){
+			$.post("updateSchedule",{"schd.id":row.id,"schd.schedule_desc":row.schedule_desc,"schd.interface_id":row.interface_id},function(data){
 				if(data.result){
 					showMsg(data.msg);
 				}
@@ -321,7 +321,7 @@ function switchSchedule(obj, checked){
 	else{
 		row.status = 0;
 	}
-	$.post("/task/switchSchedule",{"schd.id":row.id,"schd.status":row.status},function(data){
+	$.post("switchSchedule",{"schd.id":row.id,"schd.status":row.status},function(data){
 		if(data.result){
 			showMsg(data.msg);
 		}
@@ -1065,7 +1065,7 @@ function saveSchedulePlan(){
 	}
 	row.status = 0;
 	
-	$.post("/task/updateSchedule",{"schd.id":row.id,"schd.M":row.M,"schd.W":row.W,"schd.D":row.D,"schd.HH":row.HH,"schd.MM":row.MM,"schd.SS":row.SS,"schd.status":row.status},function(data){
+	$.post("updateSchedule",{"schd.id":row.id,"schd.M":row.M,"schd.W":row.W,"schd.D":row.D,"schd.HH":row.HH,"schd.MM":row.MM,"schd.SS":row.SS,"schd.status":row.status},function(data){
 		if(data.result){
 			showMsg(data.msg);
 			$('#dg_schedule').datagrid('refreshRow',rowIndex);

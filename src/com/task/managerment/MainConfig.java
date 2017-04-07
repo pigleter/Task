@@ -25,7 +25,7 @@ public class MainConfig extends JFinalConfig {
 
 	@Override
 	public void configRoute(Routes me) {
-		me.add("/task", TaskController.class);
+		me.add("/", TaskController.class);
 	}
 
 	@Override

@@ -3,13 +3,13 @@ var interfaces;
 var schedules;
 
 function loadDatasources(){
-	$.post("/task/getDatasources",function(result){
+	$.post("getDatasources",function(result){
 		datasources = result;
     });
 }
 
 function loadInterfaces(){
-	$.post("/task/getInterfaces",function(result){
+	$.post("getInterfaces",function(result){
 		interfaces = result;
     });
 }
@@ -134,3 +134,25 @@ function checkAll_M(obj){
 		}
 	}
 }
+
+
+var sQry;
+sQry = '<?xml version="1.0" encoding="utf-8"?>'
+sQry = sQry + '<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">'
+sQry = sQry + '<soap:Header>'
+sQry = sQry + '<MySoapHeader xmlns="http://tempuri.org/">'
+sQry = sQry + '<Uname>800tele</Uname>'
+sQry = sQry + '<Password>800!@#2016</Password>'
+sQry = sQry + '</MySoapHeader>'
+sQry = sQry + '</soap:Header>'
+sQry = sQry + '<soap:Body>'
+sQry = sQry + '<QueryOrdersJson xmlns="http://tempuri.org/">'
+sQry = sQry + '<orderStatus></orderStatus>'
+sQry = sQry + '<statusDateFrom>2017-03-14 00:00:00</statusDateFrom>'
+sQry = sQry + '<statusDateTo>2017-03-16 23:59:59</statusDateTo>'
+sQry = sQry + '<pageIndex>1</pageIndex>'
+sQry = sQry + '<pageSize>5000</pageSize>'
+sQry = sQry + '</QueryOrdersJson>'
+sQry = sQry + '</soap:Body>'
+sQry = sQry + '</soap:Envelope>'
+

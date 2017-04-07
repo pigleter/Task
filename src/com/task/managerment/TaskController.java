@@ -117,6 +117,7 @@ public class TaskController extends Controller {
 		Schedule schedule = Schedule.dao.find("select * from z_schedule where id = " + scheduleID).get(0);
 		Interface itf = Interface.dao.find("select * from z_interface where id = " + Integer.toString(schedule.getInt("interface_id"))).get(0);
 		String jobName = itf.getStr("interface_name");
+		String jobPath = itf.getStr("interface_path");
 		String param = itf.getStr("interface_param");
 		String M = schedule.getStr("M");
 		String D = schedule.getStr("D");		
@@ -144,7 +145,7 @@ public class TaskController extends Controller {
 		
 		try{
 			if(status == 1){
-				qs.ScheduleStart(scheduleID, jobName, param, cronTab);
+				qs.ScheduleStart(scheduleID, jobName, jobPath, param, cronTab);
 			}
 			else{
 				qs.ScheduleEnd(scheduleID);
@@ -271,19 +272,20 @@ public class TaskController extends Controller {
 	
 	public void getPlanlist(){
 		
+		
 		String id = getPara("id");
 		String times = getPara("times");
 		Schedule schd;
 		List<Schedule> schedules;
 		List<Schedule> result = Schedule.dao.find("select * from z_schedule where 1 = 2");
-		Calendar cl = Calendar.getInstance();
-		Date dt = (Date)cl.getTime().clone();
-		String M = "";
-		String W = "";
-		String D = "";
-		String HH = "";
-		String MM = "";
-		String SS = "";
+//		Calendar cl = Calendar.getInstance();
+//		Date dt = (Date)cl.getTime().clone();
+//		String M = "";
+//		String W = "";
+//		String D = "";
+//		String HH = "";
+//		String MM = "";
+//		String SS = "";
 		
 		if(id.equals("0")){
 			schedules = Schedule.dao.find("select * from z_schedule where status = 1 order by id desc");
@@ -292,23 +294,35 @@ public class TaskController extends Controller {
 			schedules = Schedule.dao.find("select * from z_schedule where status = 1 and id = " + id + "  order by id desc");
 		}
 		
+		QuartzSchedule qs = new QuartzSchedule();
+		Date nowTime = new Date();
+		Date nextTime = null;
+		String scheduleID;
+		SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss E");
 		for(int i = 0; i < schedules.size(); i++){
-			cl.setTime(dt);
+			//cl.setTime(dt);
+			scheduleID = schedules.get(i).getInt("id").toString();
 			for(int j = 0; j < Integer.parseInt(times); j++){
-				M = schedules.get(i).getStr("M");
-				W = schedules.get(i).getStr("W");
-				D = schedules.get(i).getStr("D");
-				HH = schedules.get(i).getStr("HH");
-				MM = schedules.get(i).getStr("MM");
-				SS = schedules.get(i).getStr("SS");
+//				M = schedules.get(i).getStr("M");
+//				W = schedules.get(i).getStr("W");
+//				D = schedules.get(i).getStr("D");
+//				HH = schedules.get(i).getStr("HH");
+//				MM = schedules.get(i).getStr("MM");
+//				SS = schedules.get(i).getStr("SS");
 				
+				if(j == 0){
+					nextTime = qs.GetNextRunTime(nowTime, scheduleID);
+				}
+				else{
+					nextTime = qs.GetNextRunTime(nextTime, scheduleID);
+				}				
 				schd = new Schedule()._setAttrs(schedules.get(i));
 				schd.put("order", j + 1);
-				schd.put("next_run", getPlanListData(cl, M, W, D, HH, MM, SS));
+				schd.put("next_run", dateformat.format(nextTime));//getPlanListData(cl, M, W, D, HH, MM, SS));
 				
 				result.add(j, schd);
 				
-				cl.add(Calendar.SECOND, 1);
+				//cl.add(Calendar.SECOND, 1);
 			}
 		}
 		renderJson(result);
@@ -657,6 +671,14 @@ public class TaskController extends Controller {
 	
 	public void getSchedules(){
 		List<Schedule> schedules = Schedule.dao.find("select * from z_schedule");
+		QuartzSchedule qs = new QuartzSchedule();
+		try{
+			qs.IsRunning("1");
+		}
+		catch(Exception e){
+			
+		}
+		
 		renderJson(schedules); 
 	}
 	

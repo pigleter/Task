@@ -1,8 +1,8 @@
 var loadTime = 0;
 
 function showPlanlistPage(){
-	$.post("/task/getSchedulesAll",function(result){
-		$.post("/task/getInterfaces",function(result){
+	$.post("getSchedulesAll",function(result){
+		$.post("getInterfaces",function(result){
 			interfaces = result;
 	    });
 		schedules = result;
@@ -19,7 +19,7 @@ function showPlanlistData(){
 	})
 	$('#dg_planlist').datagrid({
 	    title:"计划列表",
-	    url:"/task/getPlanlist",
+	    url:"getPlanlist",
 	    queryParams:{
 	    	id: $('#cbx_schedule').combobox('getValue'),
 	    	times: $('#cbx_times').combobox('getValue')
