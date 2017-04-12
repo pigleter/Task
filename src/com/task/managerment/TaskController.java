@@ -288,10 +288,10 @@ public class TaskController extends Controller {
 //		String SS = "";
 		
 		if(id.equals("0")){
-			schedules = Schedule.dao.find("select * from z_schedule where status = 1 order by id desc");
+			schedules = Schedule.dao.find("select * from z_schedule where status = 1 order by interface_id desc");
 		}
 		else{
-			schedules = Schedule.dao.find("select * from z_schedule where status = 1 and id = " + id + "  order by id desc");
+			schedules = Schedule.dao.find("select distinct t2.* from z_interface t1, z_schedule t2 where t1.id = " + id + " and t1.id = t2.interface_id and t2.status = 1 order by t2.interface_id, t2.id desc");
 		}
 		
 		QuartzSchedule qs = new QuartzSchedule();
@@ -682,12 +682,21 @@ public class TaskController extends Controller {
 		renderJson(schedules); 
 	}
 	
-	public void getSchedulesAll(){
+	public void getActiveSchedules(){
 		List<Schedule> schedules = Schedule.dao.find("select * from z_schedule where status = 1");
 		Schedule schedule = getModel(Schedule.class);
 		schedule.set("id", "0");
 		schedule.set("schedule_desc", "全部作业调度");
 		schedules.add(0, schedule);
 		renderJson(schedules); 
+	}
+	
+	public void getActiveInterfaces(){
+		List<Interface> interfaces = Interface.dao.find("select t1.* from z_interface t1, z_schedule t2 where t1.id = t2.interface_id and t2.status = 1");
+		Interface itf = getModel(Interface.class);
+		itf.set("id", "0");
+		itf.set("interface_desc", "全部已调度接口");
+		interfaces.add(0, itf);
+		renderJson(interfaces); 
 	}
 }

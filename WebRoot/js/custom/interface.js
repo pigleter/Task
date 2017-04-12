@@ -35,7 +35,7 @@ function showInterfaceData(){
 	    columns:[
 	    	[
 	        {field:'id',title:'ID',width:'3%'},
-	        {field:'interface_name',title:'接口名称',width:'20%',
+	        {field:'interface_name',title:'接口',width:'20%',
 	        	editor:{
 	        		type:'validatebox',
 	        		options:{
@@ -56,7 +56,7 @@ function showInterfaceData(){
 	        		type:'validatebox'
 	        	}
 	        },
-	        {field:'interface_desc',title:'接口描述',width:'20%',
+	        {field:'interface_desc',title:'接口名称',width:'20%',
 	        	editor:{
 	        		type:'validatebox',
 	        		options:{

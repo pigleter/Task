@@ -29,6 +29,7 @@ public class QuartzJob implements org.quartz.Job {
 			PropKit.use("config.properties");
 			String jobName = args.getJobDetail().getJobDataMap().getString("jobName");
 			String jobPath = args.getJobDetail().getJobDataMap().getString("jobPath");
+			String scheduleID = args.getJobDetail().getJobDataMap().getString("scheduleID");
 			String params[] = null;
 			if(args.getJobDetail().getJobDataMap().getString("param") != null){
 				params = args.getJobDetail().getJobDataMap().getString("param").split(",");
@@ -54,6 +55,7 @@ public class QuartzJob implements org.quartz.Job {
 			String dateString = formatter.format(currentTime);
 			String uniqueJobID = dateString + String.valueOf((long)((Math.random()*9+1)*100000));
 			MDC.put("uniqueJobID", uniqueJobID);
+			MDC.put("scheduleID", scheduleID);
 			logger.info("Kettle作业开始执行!");
 			job.waitUntilFinished();			
             if(job.getErrors() > 0){

@@ -42,6 +42,7 @@ public class QuartzSchedule {
 			job.getJobDataMap().put("jobName", jobName);
 			job.getJobDataMap().put("jobPath", jobPath);
 			job.getJobDataMap().put("param", param);
+			job.getJobDataMap().put("scheduleID", scheduleID);
 
 			Trigger trigger = TriggerBuilder.newTrigger().withIdentity(scheduleID, "triggerGroup")  
               .withSchedule(CronScheduleBuilder.cronSchedule(cronTab))  

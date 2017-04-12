@@ -81,7 +81,7 @@ function showScheduleData(){
 					}
 		        },
 		        {field:'id',title:'ID',width:'5%'},
-		        {field:'schedule_desc',title:'调度描述',width:'20%',
+		        {field:'schedule_desc',title:'调度名称',width:'20%',
 		        	editor:{
 		        		type:'validatebox',
 		        		options:{
@@ -89,7 +89,7 @@ function showScheduleData(){
 		        		}
 		        	}
 		        },
-		        {field:'interface_id',title:'接口描述',width:'20%',
+		        {field:'interface_id',title:'接口名称',width:'20%',
 		        	formatter:function(value){
 		                for(var i=0; i<interfaces.length; i++){
 		                    if (interfaces[i].id == value){

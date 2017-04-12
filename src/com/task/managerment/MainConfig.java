@@ -6,7 +6,7 @@ import com.jfinal.config.Interceptors;
 import com.jfinal.config.JFinalConfig;
 import com.jfinal.config.Plugins;
 import com.jfinal.config.Routes;
-import com.jfinal.core.JFinal;
+//import com.jfinal.core.JFinal;
 import com.jfinal.kit.PropKit;
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.c3p0.C3p0Plugin;
@@ -51,7 +51,7 @@ public class MainConfig extends JFinalConfig {
 	}
 	
 	public static void main(String[] args) {
-		JFinal.start("WebRoot", 8080, "/", 5);
+		//JFinal.start("WebRoot", 8080, "/", 5);
 	}
 
 }
