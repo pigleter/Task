@@ -12,6 +12,8 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 import org.pentaho.di.core.KettleEnvironment;
 import org.pentaho.di.core.database.DatabaseMeta;
+import org.pentaho.di.core.logging.KettleLogStore;
+import org.pentaho.di.core.logging.LoggingBuffer;
 import org.pentaho.di.job.JobMeta;
 import org.pentaho.di.repository.Repository;
 import org.pentaho.di.repository.RepositoryDirectoryInterface;
@@ -57,18 +59,28 @@ public class QuartzJob implements org.quartz.Job {
 			MDC.put("uniqueJobID", uniqueJobID);
 			MDC.put("scheduleID", scheduleID);
 			logger.info("Kettle作业开始执行!");
-			job.waitUntilFinished();			
+			job.waitUntilFinished();
             if(job.getErrors() > 0){
+            	
+            	LoggingBuffer appender = KettleLogStore.getAppender();
+                appender.removeGeneralMessages();
+                String logText = appender.getBuffer(job.getLogChannelId(), false).toString();
+                logText = logText.replaceAll("\'", "\\\\\'");
+                String lineSeparator = System.getProperty("line.separator");
+                String[] logs = logText.split(lineSeparator);
             	logger.error("Kettle作业执行异常!");
-                throw new Exception("Kettle作业执行异常！");
+            	for(int i = 0; i < logs.length; i++){
+            		logger.error(logs[i]);
+            	}
             }
             else{
-            	logger.info("Kettle作业执行完成!");
+            	logger.info("Kettle作业执行成功!");
             }
 		}
 		catch(Exception e){		
 			e.printStackTrace();
-			logger.error("Kettle作业执行异常！" + e.getMessage());
+			logger.error("Kettle作业启动异常！");
+			logger.error(e.getMessage());
 			throw (JobExecutionException)e;
 		}
 		

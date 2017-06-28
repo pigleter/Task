@@ -15,7 +15,8 @@ import org.quartz.impl.StdSchedulerFactory;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.log4j.Logger;  
+import org.apache.log4j.Logger;
+import org.apache.log4j.MDC;  
 
 public class QuartzSchedule {
 	
@@ -51,7 +52,7 @@ public class QuartzSchedule {
 			scheduler.scheduleJob(job, trigger);
 			
 			scheduler.start();
-			
+			MDC.put("scheduleID", scheduleID);
 			logger.info("作业调度成功！");
 			
 		}
@@ -66,9 +67,11 @@ public class QuartzSchedule {
 		
 		try{
 			scheduler.deleteJob(JobKey.jobKey(scheduleID, "jobgroup"));
+			MDC.put("scheduleID", scheduleID);
 			logger.info("作业停止调度成功！");
 		}
 		catch(Exception e){
+			MDC.put("scheduleID", scheduleID);
 			logger.error("作业停止调度异常！" + e.getMessage());
 			throw e;
 		}
