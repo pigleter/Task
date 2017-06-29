@@ -15,6 +15,7 @@ import com.jfinal.render.ViewType;
 import com.task.managerment.model.Datasource;
 import com.task.managerment.model.Interface;
 import com.task.managerment.model.Schedule;
+import com.task.managerment.model.JobLog;
 
 public class MainConfig extends JFinalConfig {
 
@@ -37,6 +38,7 @@ public class MainConfig extends JFinalConfig {
 		arp.addMapping("z_interface", Interface.class);
 		arp.addMapping("z_datasource", Datasource.class);
 		arp.addMapping("z_schedule", Schedule.class);
+		arp.addMapping("z_job_log", JobLog.class);
 		me.add(C3p0Plugin);
 		me.add(arp);
 	}

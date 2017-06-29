@@ -13,6 +13,7 @@
 <script type="text/javascript" src="js/custom/interface.js"></script>
 <script type="text/javascript" src="js/custom/schedule.js"></script>
 <script type="text/javascript" src="js/custom/planlist.js"></script>
+<script type="text/javascript" src="js/custom/loglist.js"></script>
 <script type="text/javascript">
 	function get_content(content){
 		switch(content)
@@ -41,6 +42,13 @@
 			    }
 			});		
 			break;
+		case 'loglist':
+			$('#pl').panel({
+			    href:'content/loglist.html',
+			    onLoad:function(){
+			    	showLoglistPage();
+			    }
+			});	
 		}
 	}
 </script>
@@ -64,7 +72,7 @@
 		    </div>
 		    <div title="日志查看">
 		    	<div>
-		    		<a class="easyui-linkbutton" data-options="fit:'true',plain:'true'" style="text-align:left">日志查看</a>
+		    		<a class="easyui-linkbutton" data-options="fit:'true',plain:'true'" style="text-align:left"  onclick="get_content('loglist');">日志查看</a>
 		    	</div>
 		    </div>
 		    <div title="系统配置">

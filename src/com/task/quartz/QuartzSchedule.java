@@ -15,13 +15,9 @@ import org.quartz.impl.StdSchedulerFactory;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.MDC;  
-
 public class QuartzSchedule {
 	
 	private static Scheduler scheduler = getScheduler();
-	private static Logger logger = Logger.getLogger(QuartzSchedule.class);
 	
 	private static Scheduler getScheduler(){
 		SchedulerFactory sf = new StdSchedulerFactory();  
@@ -35,11 +31,12 @@ public class QuartzSchedule {
         return scheduler;
     }  
 	
-	public boolean ScheduleStart(String scheduleID, String jobName, String jobPath, String param, String cronTab) throws Exception {
+	public boolean ScheduleStart(String scheduleID, String jobDesc, String jobName, String jobPath, String param, String cronTab) throws Exception {
 		
 		try{
 			JobDetail job = JobBuilder.newJob(QuartzJob.class).withIdentity(scheduleID, "jobgroup").build();
 
+			job.getJobDataMap().put("jobDesc", jobDesc);
 			job.getJobDataMap().put("jobName", jobName);
 			job.getJobDataMap().put("jobPath", jobPath);
 			job.getJobDataMap().put("param", param);
@@ -52,12 +49,8 @@ public class QuartzSchedule {
 			scheduler.scheduleJob(job, trigger);
 			
 			scheduler.start();
-			MDC.put("scheduleID", scheduleID);
-			logger.info("作业调度成功！");
-			
 		}
 		catch(Exception e){
-			logger.error("作业调度失败！" + e.getMessage());
 			throw e;			
 		}
 		return true;
@@ -67,12 +60,8 @@ public class QuartzSchedule {
 		
 		try{
 			scheduler.deleteJob(JobKey.jobKey(scheduleID, "jobgroup"));
-			MDC.put("scheduleID", scheduleID);
-			logger.info("作业停止调度成功！");
 		}
 		catch(Exception e){
-			MDC.put("scheduleID", scheduleID);
-			logger.error("作业停止调度异常！" + e.getMessage());
 			throw e;
 		}
 		return true;

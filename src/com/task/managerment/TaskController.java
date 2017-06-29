@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.jfinal.core.Controller;
 import com.task.managerment.model.Interface;
+import com.task.managerment.model.JobLog;
 import com.task.managerment.model.Datasource;
 import com.task.managerment.model.Schedule;
 import com.task.quartz.QuartzSchedule;
@@ -116,6 +117,7 @@ public class TaskController extends Controller {
 	public boolean switchQuartzJob(String scheduleID, int status) throws Exception{
 		Schedule schedule = Schedule.dao.find("select * from z_schedule where id = " + scheduleID).get(0);
 		Interface itf = Interface.dao.find("select * from z_interface where id = " + Integer.toString(schedule.getInt("interface_id"))).get(0);
+		String jobDesc = itf.getStr("interface_desc");
 		String jobName = itf.getStr("interface_name");
 		String jobPath = itf.getStr("interface_path");
 		String param = itf.getStr("interface_param");
@@ -145,7 +147,7 @@ public class TaskController extends Controller {
 		
 		try{
 			if(status == 1){
-				qs.ScheduleStart(scheduleID, jobName, jobPath, param, cronTab);
+				qs.ScheduleStart(scheduleID, jobDesc, jobName, jobPath, param, cronTab);
 			}
 			else{
 				qs.ScheduleEnd(scheduleID);
@@ -680,6 +682,12 @@ public class TaskController extends Controller {
 		}
 		
 		renderJson(schedules); 
+	}
+	
+	public void getLogs(){
+		List<JobLog> joblog = JobLog.dao.find("select * from z_job_log where UniqueJobID <> '' order by UniqueJobID, logID");
+		
+		renderJson(joblog); 
 	}
 	
 	public void getActiveSchedules(){

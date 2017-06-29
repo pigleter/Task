@@ -29,9 +29,20 @@ public class QuartzJob implements org.quartz.Job {
 		
 		try{
 			PropKit.use("config.properties");
+			String jobDesc = args.getJobDetail().getJobDataMap().getString("jobDesc");
 			String jobName = args.getJobDetail().getJobDataMap().getString("jobName");
 			String jobPath = args.getJobDetail().getJobDataMap().getString("jobPath");
-			String scheduleID = args.getJobDetail().getJobDataMap().getString("scheduleID");
+			
+			Date currentTime = new Date();
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+			String dateString = formatter.format(currentTime);
+			String uniqueJobID = dateString + String.valueOf((long)((Math.random()*9+1)*100000));
+			MDC.put("interfaceDesc", jobDesc);
+			MDC.put("interfaceName", jobName);
+			MDC.put("uniqueJobID", uniqueJobID);
+			
+			logger.info("Kettle作业初始化!");
+			
 			String params[] = null;
 			if(args.getJobDetail().getJobDataMap().getString("param") != null){
 				params = args.getJobDetail().getJobDataMap().getString("param").split(",");
@@ -52,13 +63,9 @@ public class QuartzJob implements org.quartz.Job {
 				}
 			}
 			job.start();
-			Date currentTime = new Date();
-			SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
-			String dateString = formatter.format(currentTime);
-			String uniqueJobID = dateString + String.valueOf((long)((Math.random()*9+1)*100000));
-			MDC.put("uniqueJobID", uniqueJobID);
-			MDC.put("scheduleID", scheduleID);
+			
 			logger.info("Kettle作业开始执行!");
+			
 			job.waitUntilFinished();
             if(job.getErrors() > 0){
             	
@@ -67,11 +74,11 @@ public class QuartzJob implements org.quartz.Job {
                 String logText = appender.getBuffer(job.getLogChannelId(), false).toString();
                 logText = logText.replaceAll("\'", "\\\\\'");
                 String lineSeparator = System.getProperty("line.separator");
-                String[] logs = logText.split(lineSeparator);
-            	logger.error("Kettle作业执行异常!");
+                String[] logs = logText.split(lineSeparator);            	
             	for(int i = 0; i < logs.length; i++){
             		logger.error(logs[i]);
             	}
+            	logger.error("Kettle作业执行异常!");
             }
             else{
             	logger.info("Kettle作业执行成功!");
