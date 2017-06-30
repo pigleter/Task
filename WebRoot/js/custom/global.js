@@ -101,24 +101,9 @@ function showMsg(msg){
 	$.messager.show({
 		title:'系统消息',
 		msg:msg,
-		timeout:2000,
+		timeout:5000,
 		showType:'slide'
 	});
-}
-
-
-function test(){
-	$('#A').combo({
-        required:true,
-        editable:false,
-        multiple:true,
-        width:200,
-        panelWidth: 600
-    });
-    $('#p').removeAttr('style');//width(0);
-    var aa = $('#A');
-	$('#p').appendTo($('#A').combo('panel'));
-	//$('#p').panel('maximize');
 }
 
 function checkAll_M(obj){

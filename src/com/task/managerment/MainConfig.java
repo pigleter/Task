@@ -35,10 +35,10 @@ public class MainConfig extends JFinalConfig {
 		C3p0Plugin C3p0Plugin = new C3p0Plugin(PropKit.get("jdbcUrl"), PropKit.get("user"), PropKit.get("password"));
 		ActiveRecordPlugin arp = new ActiveRecordPlugin(C3p0Plugin);
 		arp.setShowSql(true);
-		arp.addMapping("z_interface", Interface.class);
-		arp.addMapping("z_datasource", Datasource.class);
-		arp.addMapping("z_schedule", Schedule.class);
-		arp.addMapping("z_job_log", JobLog.class);
+		arp.addMapping("z_task_datasource", Datasource.class);
+		arp.addMapping("z_task_interface", Interface.class);		
+		arp.addMapping("z_task_schedule", Schedule.class);
+		arp.addMapping("z_task_joblog", JobLog.class);
 		me.add(C3p0Plugin);
 		me.add(arp);
 	}

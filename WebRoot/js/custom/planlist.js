@@ -4,13 +4,13 @@ function showPlanlistPage(){
 	$.post("getActiveSchedules",function(result){
 		$.post("getActiveInterfaces",function(result){
 			interfaces = result;
-			showPlanlistData();
+			showPlanlistReport();
 	    });
 		schedules = result;		
     });	
 }
 
-function showPlanlistData(){
+function showPlanlistReport(){
 	$('#cbx_interface').combobox({
 		data:interfaces,
 		value:0,

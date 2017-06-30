@@ -43,7 +43,7 @@ public class TaskController extends Controller {
 	}
 	
 	public boolean isInSchedule(int interface_id){
-		String sql = "select t2.* from z_interface as t1, z_schedule as t2 "
+		String sql = "select t2.* from z_task_interface as t1, z_task_schedule as t2 "
 				+ "where t1.id = t2.interface_id "
 				+ "and t2.status = 1 "
 				+ "and t1.id = " +  Integer.toString(interface_id);
@@ -86,7 +86,7 @@ public class TaskController extends Controller {
 	public void deleteInterface(){
 		Interface itf = getModel(Interface.class, "itf");
 		int interface_id = itf.getInt("id");
-		List<Schedule> schedules = Schedule.dao.find("select * from z_schedule where interface_id = " + Integer.toString(interface_id));
+		List<Schedule> schedules = Schedule.dao.find("select * from z_task_schedule where interface_id = " + Integer.toString(interface_id));
 		
 		try {	
 			for(int i = 0; i < schedules.size(); i++){
@@ -115,8 +115,8 @@ public class TaskController extends Controller {
 	}
 	
 	public boolean switchQuartzJob(String scheduleID, int status) throws Exception{
-		Schedule schedule = Schedule.dao.find("select * from z_schedule where id = " + scheduleID).get(0);
-		Interface itf = Interface.dao.find("select * from z_interface where id = " + Integer.toString(schedule.getInt("interface_id"))).get(0);
+		Schedule schedule = Schedule.dao.find("select * from z_task_schedule where id = " + scheduleID).get(0);
+		Interface itf = Interface.dao.find("select * from z_task_interface where id = " + Integer.toString(schedule.getInt("interface_id"))).get(0);
 		String jobDesc = itf.getStr("interface_desc");
 		String jobName = itf.getStr("interface_name");
 		String jobPath = itf.getStr("interface_path");
@@ -279,7 +279,7 @@ public class TaskController extends Controller {
 		String times = getPara("times");
 		Schedule schd;
 		List<Schedule> schedules;
-		List<Schedule> result = Schedule.dao.find("select * from z_schedule where 1 = 2");
+		List<Schedule> result = Schedule.dao.find("select * from z_task_schedule where 1 = 2");
 //		Calendar cl = Calendar.getInstance();
 //		Date dt = (Date)cl.getTime().clone();
 //		String M = "";
@@ -290,10 +290,10 @@ public class TaskController extends Controller {
 //		String SS = "";
 		
 		if(id.equals("0")){
-			schedules = Schedule.dao.find("select * from z_schedule where status = 1 order by interface_id desc");
+			schedules = Schedule.dao.find("select * from z_task_schedule where status = 1 order by interface_id desc");
 		}
 		else{
-			schedules = Schedule.dao.find("select distinct t2.* from z_interface t1, z_schedule t2 where t1.id = " + id + " and t1.id = t2.interface_id and t2.status = 1 order by t2.interface_id, t2.id desc");
+			schedules = Schedule.dao.find("select distinct t2.* from z_task_interface t1, z_task_schedule t2 where t1.id = " + id + " and t1.id = t2.interface_id and t2.status = 1 order by t2.interface_id, t2.id desc");
 		}
 		
 		QuartzSchedule qs = new QuartzSchedule();
@@ -662,17 +662,17 @@ public class TaskController extends Controller {
 	}
 	
 	public void getDatasources(){
-		List<Datasource> datasources = Datasource.dao.find("select * from z_datasource");
+		List<Datasource> datasources = Datasource.dao.find("select * from z_task_datasource");
 		renderJson(datasources);
 	}
 	
 	public void getInterfaces(){
-		List<Interface> interfaces = Interface.dao.find("select * from z_interface");
+		List<Interface> interfaces = Interface.dao.find("select * from z_task_interface");
 		renderJson(interfaces); 
 	}
 	
 	public void getSchedules(){
-		List<Schedule> schedules = Schedule.dao.find("select * from z_schedule");
+		List<Schedule> schedules = Schedule.dao.find("select * from z_task_schedule");
 		QuartzSchedule qs = new QuartzSchedule();
 		try{
 			qs.IsRunning("1");
@@ -684,14 +684,22 @@ public class TaskController extends Controller {
 		renderJson(schedules); 
 	}
 	
-	public void getLogs(){
-		List<JobLog> joblog = JobLog.dao.find("select * from z_job_log where UniqueJobID <> '' order by UniqueJobID, logID");
+	public void getJobLogs(){
+		List<JobLog> joblog = JobLog.dao.find("select * from z_task_joblog where UniqueJobID <> '' order by UniqueJobID, logID");
+		
+		renderJson(joblog); 
+	}
+	
+	public void getJobLogsByDateTime(){
+		String dateFrom = getPara("dateFrom");
+		String dateTo = getPara("dateTo");
+		List<JobLog> joblog = JobLog.dao.find("call sp_task_get_joblog_by_datetime ('" + dateFrom + "', '" + dateTo + "')");
 		
 		renderJson(joblog); 
 	}
 	
 	public void getActiveSchedules(){
-		List<Schedule> schedules = Schedule.dao.find("select * from z_schedule where status = 1");
+		List<Schedule> schedules = Schedule.dao.find("select * from z_task_schedule where status = 1");
 		Schedule schedule = getModel(Schedule.class);
 		schedule.set("id", "0");
 		schedule.set("schedule_desc", "全部作业调度");
@@ -700,7 +708,7 @@ public class TaskController extends Controller {
 	}
 	
 	public void getActiveInterfaces(){
-		List<Interface> interfaces = Interface.dao.find("select t1.* from z_interface t1, z_schedule t2 where t1.id = t2.interface_id and t2.status = 1");
+		List<Interface> interfaces = Interface.dao.find("select t1.* from z_task_interface t1, z_task_schedule t2 where t1.id = t2.interface_id and t2.status = 1");
 		Interface itf = getModel(Interface.class);
 		itf.set("id", "0");
 		itf.set("interface_desc", "全部已调度接口");
