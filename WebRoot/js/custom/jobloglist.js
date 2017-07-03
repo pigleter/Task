@@ -21,27 +21,7 @@ function showJobLoglistPage(){
 	});
 	
 	$('#tt').treegrid({
-		fitColumns: true,
-		fit: true,
-		toolbar:'#tb_selection',
-	    idField:'ID',
-	    treeField:'treeField',
-	    columns:[[
-	    	{title:'接口名称',field:'treeField',width:'30%'},
-	    	{title:'日志消息',field:'msg',width:'70%'}
-	    ]],
-	    onLoadSuccess: function(){
-	    	$('#tt').treegrid('collapseAll');
-	    },
-	    onSelect: function(row){
-	    	if(row.state == 'closed'){
-	    		$('#tt').treegrid('expand', row.ID);
-	    	}
-	    	else{
-	    		$('#tt').treegrid('collapse', row.ID);
-	    	}
-	    	
-	    }
+		toolbar:'#tb_selection'
 	});
 }
 
@@ -57,9 +37,10 @@ function setTreeData(logs){
 			treeDatasLv2 = new Array();
 			treeDataLv1 = {};
 			treeDataLv1.ID = logs[i].UniqueJobID;
-			treeDataLv1.treeField = logs[i].InterfaceName;
+			treeDataLv1.createtime = logs[i].CreateTime;
+			treeDataLv1.msg = logs[i].InterfaceName + ' - ' + logs[i].InterfaceDesc;
 			treeDataLv1.iconCls = "icon-ok";
-			treeDataLv1.children = treeDatasLv2;
+			treeDataLv1.children = treeDatasLv2;			
 			
 			treeDatasLv1.push(treeDataLv1);
 			
@@ -68,7 +49,7 @@ function setTreeData(logs){
 		
 		treeDataLv2 = {};
 		treeDataLv2.ID = logs[i].UniqueJobID;
-		treeDataLv2.treeField = logs[i].CreateTime;
+		treeDataLv2.createtime = logs[i].CreateTime;
 		treeDataLv2.msg = logs[i].MSG;
 		if(logs[i].LogLevel == 'ERROR'){
 			treeDataLv1.iconCls = "icon-no";
@@ -81,6 +62,7 @@ function setTreeData(logs){
 }
 
 function getJobLogsData(){
+	$('#tt').treegrid('loadData', { total: 0, rows: [] });
 	$.post("getJobLogsByDateTime",{dateFrom:$('#dt_from').datetimebox('getValue'), dateTo:$('#dt_to').datetimebox('getValue')}, function(result){
 		setTreeData(result);
     });
@@ -88,6 +70,26 @@ function getJobLogsData(){
 
 function showJobLogReport(treeData){
 	$('#tt').treegrid({
+		fitColumns: true,
+		//fit: true,
 		data: treeData,
+	    idField:'ID',
+	    treeField:'createtime',
+	    columns:[[
+	    	{title:'开始时间',field:'createtime',width:'20%'},
+	    	{title:'日志消息',field:'msg',width:'80%'}
+	    ]],
+	    onLoadSuccess: function(){
+	    	$('#tt').treegrid('collapseAll');
+	    },
+	    onSelect: function(row){
+	    	if(row.state == 'closed'){
+	    		$('#tt').treegrid('expand', row.ID);
+	    	}
+	    	else{
+	    		$('#tt').treegrid('collapse', row.ID);
+	    	}
+	    	
+	    }
 	});
 }
