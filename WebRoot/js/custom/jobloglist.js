@@ -39,7 +39,12 @@ function setTreeData(logs){
 			treeDataLv1.ID = logs[i].UniqueJobID;
 			treeDataLv1.createtime = logs[i].CreateTime;
 			treeDataLv1.msg = logs[i].InterfaceName + ' - ' + logs[i].InterfaceDesc;
-			treeDataLv1.iconCls = "icon-ok";
+			if(logs[i].JobEnd == 1){
+				treeDataLv1.iconCls = "icon-ok";
+			}
+			else{
+				treeDataLv1.iconCls = "icon-reload";
+			}			
 			treeDataLv1.children = treeDatasLv2;
 			treeDataLv1.state = 'closed';
 			

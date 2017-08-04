@@ -40,8 +40,11 @@ public class QuartzJob implements org.quartz.Job {
 			MDC.put("interfaceDesc", jobDesc);
 			MDC.put("interfaceName", jobName);
 			MDC.put("uniqueJobID", uniqueJobID);
+			MDC.put("subType", "S");
 			
 			logger.info("Kettle作业初始化!");
+			
+			MDC.put("subType", "P");
 			
 			String params[] = null;
 			if(args.getJobDetail().getJobDataMap().getString("param") != null){
@@ -77,19 +80,22 @@ public class QuartzJob implements org.quartz.Job {
                 String logText = appender.getBuffer(job.getLogChannelId(), false).toString();
                 logText = logText.replaceAll("\'", "\\\\\'");
                 String lineSeparator = System.getProperty("line.separator");
-                String[] logs = logText.split(lineSeparator);            	
+                String[] logs = logText.split(lineSeparator);
+                MDC.put("subType", "K");
             	for(int i = 0; i < logs.length; i++){
             		logger.info(logs[i]);
             	}
             	
+            	MDC.put("subType", "E");
             	logger.error("Kettle作业执行异常!");
             }
             else{
+            	MDC.put("subType", "E");
             	logger.info("Kettle作业执行成功!");
             }
 		}
-		catch(Exception e){		
-			e.printStackTrace();
+		catch(Exception e){	
+			MDC.put("subType", "E");
 			logger.error("Kettle作业启动异常！");
 			logger.error(e.getMessage());
 			throw (JobExecutionException)e;
