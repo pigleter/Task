@@ -40,7 +40,8 @@ function setTreeData(logs){
 			treeDataLv1.createtime = logs[i].CreateTime;
 			treeDataLv1.msg = logs[i].InterfaceName + ' - ' + logs[i].InterfaceDesc;
 			treeDataLv1.iconCls = "icon-ok";
-			treeDataLv1.children = treeDatasLv2;			
+			treeDataLv1.children = treeDatasLv2;
+			treeDataLv1.state = 'closed';
 			
 			treeDatasLv1.push(treeDataLv1);
 			
@@ -71,7 +72,7 @@ function getJobLogsData(){
 function showJobLogReport(treeData){
 	$('#tt').treegrid({
 		fitColumns: true,
-		//fit: true,
+		fit: true,
 		data: treeData,
 	    idField:'ID',
 	    treeField:'createtime',
@@ -80,7 +81,7 @@ function showJobLogReport(treeData){
 	    	{title:'日志消息',field:'msg',width:'80%'}
 	    ]],
 	    onLoadSuccess: function(){
-	    	$('#tt').treegrid('collapseAll');
+	    	$('#tt').treegrid('unselectAll');
 	    },
 	    onSelect: function(row){
 	    	if(row.state == 'closed'){

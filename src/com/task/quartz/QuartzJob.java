@@ -68,17 +68,20 @@ public class QuartzJob implements org.quartz.Job {
 			
 			job.waitUntilFinished();
 			
-			LoggingBuffer appender = KettleLogStore.getAppender();
-            appender.removeGeneralMessages();
-            String logText = appender.getBuffer(job.getLogChannelId(), false).toString();
-            logText = logText.replaceAll("\'", "\\\\\'");
-            String lineSeparator = System.getProperty("line.separator");
-            String[] logs = logText.split(lineSeparator);            	
-        	for(int i = 0; i < logs.length; i++){
-        		logger.info(logs[i]);
-        	}
+			
         	
-            if(job.getErrors() > 0){            	
+            if(job.getErrors() > 0){
+            	
+            	LoggingBuffer appender = KettleLogStore.getAppender();
+                appender.removeGeneralMessages();
+                String logText = appender.getBuffer(job.getLogChannelId(), false).toString();
+                logText = logText.replaceAll("\'", "\\\\\'");
+                String lineSeparator = System.getProperty("line.separator");
+                String[] logs = logText.split(lineSeparator);            	
+            	for(int i = 0; i < logs.length; i++){
+            		logger.info(logs[i]);
+            	}
+            	
             	logger.error("Kettle作业执行异常!");
             }
             else{
