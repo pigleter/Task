@@ -67,6 +67,8 @@ public class QuartzJob implements org.quartz.Job {
 			}
 			job.start();
 			
+			
+			
 			logger.info("Kettle作业开始执行!");
 			
 			job.waitUntilFinished();
@@ -87,12 +89,17 @@ public class QuartzJob implements org.quartz.Job {
             	}
             	
             	MDC.put("subType", "E");
-            	logger.error("Kettle作业执行异常!");
+            	logger.error("Kettle作业执行异常!");           	
+            	
             }
             else{
             	MDC.put("subType", "E");
             	logger.info("Kettle作业执行成功!");
             }
+            
+        	repository = null;
+        	kettleDatabaseMeta = null;
+        	dataMeta = null;
 		}
 		catch(Exception e){	
 			MDC.put("subType", "E");
