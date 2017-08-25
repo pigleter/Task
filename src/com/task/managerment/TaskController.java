@@ -693,7 +693,10 @@ public class TaskController extends Controller {
 	public void getJobLogsByDateTime(){
 		String dateFrom = getPara("dateFrom");
 		String dateTo = getPara("dateTo");
-		List<JobLog> joblog = JobLog.dao.find("call sp_task_get_joblog_by_datetime ('" + dateFrom + "', '" + dateTo + "')");
+		String pageNum = getPara("pageNum");
+		String pageSize = getPara("pageSize");
+		String jobStatus = getPara("jobStatus");
+		List<JobLog> joblog = JobLog.dao.find("call sp_task_get_joblog_by_datetime ('" + dateFrom + "', '" + dateTo + "', " + pageNum + ", " + pageSize + ", '" + jobStatus + "')");
 		
 		renderJson(joblog); 
 	}

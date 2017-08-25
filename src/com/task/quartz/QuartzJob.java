@@ -24,11 +24,25 @@ import org.pentaho.di.job.Job;
 public class QuartzJob implements org.quartz.Job {
 	
 	private static Logger logger = Logger.getLogger(QuartzSchedule.class);
+	//private static DatabaseMeta dataMeta;
+	private DatabaseMeta dataMeta;
+	private KettleDatabaseRepositoryMeta kettleDatabaseMeta;
+	private KettleDatabaseRepository repository;
+	
+	static{
+		//PropKit.use("config.properties");
+		//dataMeta = new DatabaseMeta("kettle_dev_for_api", "Oracle", "Native", PropKit.get("ip"), "wmprd", "1521", PropKit.get("kettleUser"), PropKit.get("kettlePwd"));
+		//kettleDatabaseMeta = new KettleDatabaseRepositoryMeta("kettle_dev_for_api", "kettle_dev_for_api", "kettle_dev_for_api", dataMeta);
+		//repository = new KettleDatabaseRepository();
+		//repository.init(kettleDatabaseMeta);
+		
+	}
+	
 	@Override
 	public void execute(JobExecutionContext args) throws JobExecutionException {
 		
 		try{
-			PropKit.use("config.properties");
+			
 			String jobDesc = args.getJobDetail().getJobDataMap().getString("jobDesc");
 			String jobName = args.getJobDetail().getJobDataMap().getString("jobName");
 			String jobPath = args.getJobDetail().getJobDataMap().getString("jobPath");
@@ -43,6 +57,7 @@ public class QuartzJob implements org.quartz.Job {
 			MDC.put("subType", "S");
 			
 			logger.info("Kettle作业初始化!");
+			System.out.println("Kettle作业初始化!");
 			
 			MDC.put("subType", "P");
 			
@@ -52,9 +67,9 @@ public class QuartzJob implements org.quartz.Job {
 			}
 			
 			KettleEnvironment.init();
-			DatabaseMeta dataMeta = new DatabaseMeta("kettle_dev_for_api", "Oracle", "Native", PropKit.get("ip"), "wmprd", "1521", PropKit.get("kettleUser"), PropKit.get("kettlePwd"));
-			KettleDatabaseRepository repository = new KettleDatabaseRepository();			
-			KettleDatabaseRepositoryMeta kettleDatabaseMeta = new KettleDatabaseRepositoryMeta("kettle_dev_for_api", "kettle_dev_for_api", "kettle_dev_for_api", dataMeta);
+			dataMeta = new DatabaseMeta(PropKit.get("repositoryName"), PropKit.get("repositoryDatabaseType"), "Native", PropKit.get("ip"), PropKit.get("repositoryDatabase"), "3306", PropKit.get("kettleUser"), PropKit.get("kettlePwd"));
+			kettleDatabaseMeta = new KettleDatabaseRepositoryMeta(PropKit.get("repositoryName"), PropKit.get("repositoryName"), PropKit.get("repositoryName"), dataMeta);
+			repository = new KettleDatabaseRepository();	
 			repository.init(kettleDatabaseMeta);
 			repository.connect(PropKit.get("repositoryUser"), PropKit.get("repositoryPwd"));
 			RepositoryDirectoryInterface directory = repository.findDirectory(jobPath);
@@ -65,15 +80,12 @@ public class QuartzJob implements org.quartz.Job {
 					job.getJobMeta().setParameterValue(params[i].split("=")[0], params[i].split("=")[1]);
 				}
 			}
-			job.start();
-			
-			
+			job.start();			
 			
 			logger.info("Kettle作业开始执行!");
+			System.out.println("Kettle作业开始执行!");
 			
-			job.waitUntilFinished();
-			
-			
+			job.waitUntilFinished();		
         	
             if(job.getErrors() > 0){
             	
@@ -86,26 +98,34 @@ public class QuartzJob implements org.quartz.Job {
                 MDC.put("subType", "K");
             	for(int i = 0; i < logs.length; i++){
             		logger.info(logs[i]);
+            		System.out.println(logs[i]);
             	}
             	
             	MDC.put("subType", "E");
-            	logger.error("Kettle作业执行异常!");           	
+            	logger.error("Kettle作业执行异常!"); 
+            	System.out.println("Kettle作业执行异常!");
             	
             }
             else{
             	MDC.put("subType", "E");
             	logger.info("Kettle作业执行成功!");
-            }
+            	System.out.println("Kettle作业执行成功!");
+            }            
             
-        	repository = null;
-        	kettleDatabaseMeta = null;
-        	dataMeta = null;
 		}
 		catch(Exception e){	
 			MDC.put("subType", "E");
 			logger.error("Kettle作业启动异常！");
 			logger.error(e.getMessage());
+			System.out.println("Kettle作业启动异常！");
+			System.out.println(e.getMessage());
 			throw (JobExecutionException)e;
+		}
+		finally{
+			if(repository.isConnected()){
+				repository.disconnect();
+				dataMeta.getConnectionProperties().clear();
+			}
 		}
 		
 		

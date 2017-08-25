@@ -1,2 +1,5 @@
 /config.properties
 /log4j.properties
+/config.properties.prd
+/config.properties.tst
+/config.properties.test

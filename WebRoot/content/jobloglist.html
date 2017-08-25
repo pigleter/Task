@@ -1,4 +1,4 @@
-<table id="tt"></table>
+<table id="dg_joblog"></table>
 
 <div id="tb_selection">
 	<table>
@@ -6,22 +6,37 @@
 			<td>
 				<span>作业开始时间：从</span>
 			</td>
-			<td style="width:10px">
+			<td style="width:5px">
 			</td>
 			<td>
-				<input id="dt_from" class="easyui-datetimebox" data-options="required:true" style="width:150px">
+				<input id="dt_from" class="easyui-datetimebox" data-options="required:true,editable:false" style="width:150px">
 			</td>
-			<td style="width:10px">
+			<td style="width:5px">
 			</td>
 			<td>
 				<span>到</span>
 			</td>
-			<td style="width:10px">
+			<td style="width:5px">
 			</td>
 			<td>
-				<input id="dt_to" class="easyui-datetimebox" data-options="required:true" style="width:150px">
+				<input id="dt_to" class="easyui-datetimebox" data-options="required:true,editable:false" style="width:150px">
 			</td>
-			<td style="width:10px">
+			<td style="width:30px">
+			</td>
+			<td>
+				<span>作业状态：</span>
+			</td>
+			<td style="width:5px">
+			</td>
+			<td>
+				<select id="cbx_status" class="easyui-combobox" data-options="width:70,panelHeight:100,editable:false">
+					<option value ="A">全部</option>
+					<option value ="S">已成功</option>
+					<option value ="E">已失败</option>
+					<option value ="P">运行中</option>
+				</select>
+			</td>
+			<td style="width:20px">
 			</td>
 			<td>
 				<a id="btn_query" class="easyui-linkbutton" data-options="iconCls:'icon-search',onClick:function(){getJobLogsData();}">查询</a>

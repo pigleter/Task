@@ -6,7 +6,6 @@ import com.jfinal.config.Interceptors;
 import com.jfinal.config.JFinalConfig;
 import com.jfinal.config.Plugins;
 import com.jfinal.config.Routes;
-import com.jfinal.core.JFinal;
 //import com.jfinal.core.JFinal;
 import com.jfinal.kit.PropKit;
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
@@ -22,7 +21,7 @@ public class MainConfig extends JFinalConfig {
 	@Override
 	public void configConstant(Constants me) {
 		me.setViewType(ViewType.JSP);
-		PropKit.use("config.properties");
+		PropKit.use("config.properties.test");
 	}
 
 	@Override
@@ -54,7 +53,7 @@ public class MainConfig extends JFinalConfig {
 	}
 	
 	public static void main(String[] args) {
-		JFinal.start("WebRoot", 8080, "/", 5);
+		//JFinal.start("WebRoot", 8080, "/", 5);
 	}
 
 }

@@ -1,3 +1,7 @@
+//var gbPageList = [50];
+var gbPageSize = 50;
+var gbPageNumber = 1;
+
 function showJobLoglistPage(){	
 	var date = new Date();
 	var dateSeperator = "-";
@@ -20,9 +24,33 @@ function showJobLoglistPage(){
 	    value: dateTo
 	});
 	
-	$('#tt').treegrid({
-		toolbar:'#tb_selection'
+	$('#dg_joblog').treegrid({
+		fitColumns: true,
+		fit: true,
+		pagination: true,
+		data: {},
+	    idField:'ID',
+	    treeField:'createtime',
+	    toolbar:'#tb_selection',
+	    columns:[[
+	    	{title:'开始时间',field:'createtime',width:'20%'},
+	    	{title:'日志消息',field:'msg',width:'80%'}
+	    ]],
+	    onLoadSuccess: function(){
+	    	$('#dg_joblog').treegrid('unselectAll');
+	    },
+	    onSelect: function(row){
+	    	if(row.state == 'closed'){
+	    		$('#dg_joblog').treegrid('expand', row.ID);
+	    	}
+	    	else{
+	    		$('#dg_joblog').treegrid('collapse', row.ID);
+	    	}
+	    	
+	    }
 	});
+	
+	initialPager();
 }
 
 function setTreeData(logs){
@@ -39,6 +67,7 @@ function setTreeData(logs){
 			treeDataLv1.ID = logs[i].UniqueJobID;
 			treeDataLv1.createtime = logs[i].CreateTime;
 			treeDataLv1.msg = logs[i].InterfaceName + ' - ' + logs[i].InterfaceDesc;
+			treeDataLv1.totalRows = logs[i].totalRows;
 			if(logs[i].JobEnd == 1){
 				treeDataLv1.iconCls = "icon-ok";
 			}
@@ -68,34 +97,85 @@ function setTreeData(logs){
 }
 
 function getJobLogsData(){
-	$('#tt').treegrid('loadData', { total: 0, rows: [] });
-	$.post("getJobLogsByDateTime",{dateFrom:$('#dt_from').datetimebox('getValue'), dateTo:$('#dt_to').datetimebox('getValue')}, function(result){
-		setTreeData(result);
+	initialPager();
+	$('#dg_joblog').treegrid('loading');
+	var jobStatus = $('#cbx_status').combobox('getValue');
+	if(gbPageNumber == 0){
+		gbPageNumber = 1;
+	}
+	$.post("getJobLogsByDateTime",{dateFrom:$('#dt_from').datetimebox('getValue'), dateTo:$('#dt_to').datetimebox('getValue'), pageNum:gbPageNumber, pageSize:gbPageSize, jobStatus:jobStatus}, function(result){
+		if(result.length > 0){
+			setTreeData(result);
+		}
+		else{
+			$('#dg_joblog').treegrid({
+				data: {}
+			});
+			initialPager();
+			$('#dg_joblog').treegrid('loaded');
+		}
     });
 }
 
 function showJobLogReport(treeData){
-	$('#tt').treegrid({
-		fitColumns: true,
-		fit: true,
-		data: treeData,
-	    idField:'ID',
-	    treeField:'createtime',
-	    columns:[[
-	    	{title:'开始时间',field:'createtime',width:'20%'},
-	    	{title:'日志消息',field:'msg',width:'80%'}
-	    ]],
-	    onLoadSuccess: function(){
-	    	$('#tt').treegrid('unselectAll');
-	    },
-	    onSelect: function(row){
-	    	if(row.state == 'closed'){
-	    		$('#tt').treegrid('expand', row.ID);
-	    	}
-	    	else{
-	    		$('#tt').treegrid('collapse', row.ID);
-	    	}
-	    	
-	    }
+
+	
+	var totalRows = treeData[0].totalRows;
+	
+	$('#dg_joblog').treegrid({
+		data: treeData
 	});
+	
+	var pager = $('#dg_joblog').treegrid('getPager');
+	var pagerOptions = $(pager).pagination('options');
+    $(pager).pagination({ 
+        pageSize: gbPageSize,
+        pageNumber: gbPageNumber,
+        //pageList: gbPageList,
+        showPageList: false,
+        showRefresh: false,
+        beforePageText: '第  ',
+        afterPageText: ' 页    共   {pages} 页', 
+        displayMsg: '当前显示 {from} - {to} 条记录 / 共 {total} 条记录',
+        total: totalRows,
+        onSelectPage:function(pageNumber, pageSize){
+        	$('#dg_joblog').treegrid('loading');
+        	gbPageSize = pageSize;
+        	gbPageNumber = pageNumber;
+        	var jobStatus = $('#cbx_status').combobox('getValue');
+        	$.post("getJobLogsByDateTime",{dateFrom:$('#dt_from').datetimebox('getValue'), dateTo:$('#dt_to').datetimebox('getValue'), pageNum:pageNumber, pageSize:pageSize, jobStatus:jobStatus}, function(result){
+        		if(result.length > 0){
+        			setTreeData(result);
+        		}
+        		else{
+        			$('#dg_joblog').treegrid({
+        				data: {}
+        			});
+        			initialPager();
+        			$('#dg_joblog').treegrid('loaded');
+        		}
+            });
+    	}
+    });	
+}
+
+function initialPager(){
+	gbPageSize = 50;
+	gbPageNumber = 1;
+	var pager = $('#dg_joblog').treegrid('getPager');
+    $(pager).pagination({ 
+        pageSize: gbPageSize,
+        pageNumber: gbPageNumber,
+        //pageList: [50],
+        showPageList: false,
+        showRefresh: false,
+        beforePageText: '第  ',
+        afterPageText: ' 页    共   {pages} 页', 
+        displayMsg: '当前显示 0 条记录 / 共  0 条记录',
+        total: 0,
+        onSelectPage:function(pageNumber, pageSize){
+        	gbPageSize = pageSize;
+        	gbPageNumber = pageNumber
+        }
+    });
 }
