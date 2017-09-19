@@ -10,6 +10,7 @@ import java.util.Date;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
+import org.apache.log4j.PropertyConfigurator;
 import org.pentaho.di.core.KettleEnvironment;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.logging.KettleLogStore;
@@ -20,6 +21,7 @@ import org.pentaho.di.repository.RepositoryDirectoryInterface;
 import org.pentaho.di.repository.kdr.KettleDatabaseRepository;
 import org.pentaho.di.repository.kdr.KettleDatabaseRepositoryMeta;
 import org.pentaho.di.job.Job;
+import com.task.util.URLUtil;
 
 public class QuartzJob implements org.quartz.Job {
 	
@@ -30,12 +32,8 @@ public class QuartzJob implements org.quartz.Job {
 	private KettleDatabaseRepository repository;
 	
 	static{
-		//PropKit.use("config.properties");
-		//dataMeta = new DatabaseMeta("kettle_dev_for_api", "Oracle", "Native", PropKit.get("ip"), "wmprd", "1521", PropKit.get("kettleUser"), PropKit.get("kettlePwd"));
-		//kettleDatabaseMeta = new KettleDatabaseRepositoryMeta("kettle_dev_for_api", "kettle_dev_for_api", "kettle_dev_for_api", dataMeta);
-		//repository = new KettleDatabaseRepository();
-		//repository.init(kettleDatabaseMeta);
-		
+		String path = URLUtil.getClassPath(QuartzJob.class) + "/log4j.properties.test";  
+		PropertyConfigurator.configure(path);
 	}
 	
 	@Override
@@ -67,7 +65,7 @@ public class QuartzJob implements org.quartz.Job {
 			}
 			
 			KettleEnvironment.init();
-			dataMeta = new DatabaseMeta(PropKit.get("repositoryName"), PropKit.get("repositoryDatabaseType"), "Native", PropKit.get("ip"), PropKit.get("repositoryDatabase"), "3306", PropKit.get("kettleUser"), PropKit.get("kettlePwd"));
+			dataMeta = new DatabaseMeta(PropKit.get("repositoryName"), PropKit.get("repositoryDatabaseType"), "Native", PropKit.get("ip"), PropKit.get("repositoryDatabase"), PropKit.get("repositoryDatabasePort"), PropKit.get("kettleUser"), PropKit.get("kettlePwd"));
 			kettleDatabaseMeta = new KettleDatabaseRepositoryMeta(PropKit.get("repositoryName"), PropKit.get("repositoryName"), PropKit.get("repositoryName"), dataMeta);
 			repository = new KettleDatabaseRepository();	
 			repository.init(kettleDatabaseMeta);

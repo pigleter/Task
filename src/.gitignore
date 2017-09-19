@@ -3,3 +3,5 @@
 /config.properties.prd
 /config.properties.tst
 /config.properties.test
+/log4j.properties.prd
+/log4j.properties.test
