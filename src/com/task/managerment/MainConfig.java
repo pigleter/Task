@@ -54,6 +54,14 @@ public class MainConfig extends JFinalConfig {
 	
 	public static void main(String[] args) {
 		//JFinal.start("WebRoot", 8080, "/", 5);
+		try {
+			TaskRestart.restartActiveSchedules();
+			System.out.print("批量启动调度成功！");
+		}
+		catch (Exception e) {
+			System.out.print("批量启动调度异常！");
+		}
+		
 	}
 
 }
