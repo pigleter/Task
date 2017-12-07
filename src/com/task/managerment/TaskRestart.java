@@ -11,7 +11,7 @@ public class TaskRestart {
 		List<Schedule> schedules = Schedule.dao.find("select * from z_task_schedule where status = 1");
 		
 		for(int i = 0; i < schedules.size(); i++) {
-			String scheduleID = schedules.get(i).getStr("id");
+			String scheduleID = Integer.toString(schedules.get(i).getInt("id"));
 			Schedule schedule = schedules.get(i);
 			Interface itf = Interface.dao.find("select * from z_task_interface where id = " + Integer.toString(schedule.getInt("interface_id"))).get(0);
 			String jobDesc = itf.getStr("interface_desc");

@@ -22,11 +22,13 @@ public class MainConfig extends JFinalConfig {
 	public void configConstant(Constants me) {
 		me.setViewType(ViewType.JSP);
 		PropKit.use("config.properties.test");
+		System.out.print("Constants");
 	}
 
 	@Override
 	public void configRoute(Routes me) {
 		me.add("/", TaskController.class);
+		System.out.print("Routes");
 	}
 
 	@Override
@@ -40,27 +42,38 @@ public class MainConfig extends JFinalConfig {
 		arp.addMapping("z_task_joblog", JobLog.class);
 		me.add(C3p0Plugin);
 		me.add(arp);
+		
+		System.out.print("Plugins");
+		
 	}
 
 	@Override
 	public void configInterceptor(Interceptors me) {
-
+		System.out.print("Interceptors");
 	}
 
 	@Override
 	public void configHandler(Handlers me) {
-		
+		System.out.print("Handlers");
 	}
 	
-	public static void main(String[] args) {
-		//JFinal.start("WebRoot", 8080, "/", 5);
+	@Override
+	public void afterJFinalStart() {
+		// TODO Auto-generated method stub
+		super.afterJFinalStart();
+		
 		try {
 			TaskRestart.restartActiveSchedules();
 			System.out.print("批量启动调度成功！");
 		}
 		catch (Exception e) {
-			System.out.print("批量启动调度异常！");
+			System.out.print("批量启动调度异常！" + e.getMessage());
 		}
+	}
+	
+	public static void main(String[] args) {
+		//JFinal.start("WebRoot", 8080, "/", 5);
+		System.out.print("main");
 		
 	}
 
